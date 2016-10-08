@@ -1,3 +1,12 @@
+/**
+  @file board.h
+  @author Pranesh Kamalakanthan (pkamala)
+
+  This header file prototypes all of the helper functions
+  in board.c for a game of Connect N
+
+*/
+
 #include <stdbool.h>
 
 // This trick will let us define the length of a winning
