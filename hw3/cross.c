@@ -165,8 +165,9 @@ int main( int argc, char *argv[] )
   // Prompts user for a valid pattern
   char pattern[LETTER_LIMIT];
   while( true ){
-    while( !getPattern( pattern ) );
-
+    while( !getPattern( pattern ) ){
+      while(getchar() != '\n');
+    }
     // Prints all words that match pattern
     for( int i=0; i < WORD_LIMIT; i++ ){
       if( matches( words[i], pattern ) ){

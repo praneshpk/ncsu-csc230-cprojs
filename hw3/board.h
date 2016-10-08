@@ -17,6 +17,38 @@
 #endif
 
 /**
+  Print the given board to standard output
+  
+  @param rows Number of rows the board has
+  @param cols Number of columns the board has.
+  @param board The game board.
+*/
+void printBoard( int rows, int cols, char board[ rows ][ cols ] );
+
+/**
+  Sets the given board to its initial state, filled with spaces.
+  
+  @param rows Number of rows the board has
+  @param cols Number of columns the board has.
+  @param board The game board.
+*/
+void clearBoard( int rows, int cols, char board[ rows ][ cols ] );
+
+/**
+  Checks to see if the game is over by determining if a player
+  has won, lost or the board is full
+
+  @param rows Number of rows the board has
+  @param cols Number of columns the board has.
+  @param board The game board.
+
+  @return 1 if one of the players has one,
+          2 if the game board is full but nobody won,
+          otherwise return 0.
+*/
+int gameStatus( int rows, int cols, char board[ rows ][ cols ] );
+
+/**
    Return true if there's a winning sequence of markers starting at
    the given board location, startRow, startCol location, either a
    sequence of X characters or O characters.  The dRow and dCol
@@ -36,3 +68,17 @@
  */
 bool winner( int rows, int cols, char board[ rows ][ cols ],
              int startRow, int startCol, int dRow, int dCol );
+
+/**
+  This function prompts the user for their next move using the given
+  player character to indicate which player has the next move (X or O).
+  If the column input is valid, the function will make the given move,
+  otherwise it will print the required error message and prompt the user
+  again for a move. The program will terminate on EOF on standard input
+
+  @param rows Number of rows the board has
+  @param cols Number of columns the board has.
+  @param board The game board.
+*/
+void makeMove( char player, int rows, int cols, 
+               char board[ rows ][ cols ] );
