@@ -82,3 +82,13 @@ bool winner( int rows, int cols, char board[ rows ][ cols ],
 */
 void makeMove( char player, int rows, int cols, 
                char board[ rows ][ cols ] );
+
+/**
+  This function looks for the best possible move for Player O to either
+  win or to prevent the opponenet from winning, if it can.
+
+  @param rows Number of rows the board has
+  @param cols Number of columns the board has.
+  @param board The game board.
+*/
+void computerMove( int rows, int cols, char board[ rows ][ cols ]);
