@@ -65,7 +65,7 @@ int main( int argc, char *argv[] )
       computerMove( rows, cols, board );
     else{
       printBoard( rows, cols, board );
-      makeMove( player, rows, cols, board );
+      promptMove( player, rows, cols, board );
     }
     
   }

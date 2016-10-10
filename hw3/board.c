@@ -110,11 +110,11 @@ void promptMove( char player, int rows, int cols,
     if( eof == EOF )
       exit(0);
 
-    // Flush standard input
+    // Flush standard input 
     while((eof = fgetc(stdin)) != '\n');
     printf( "Invalid move\n%c move> ", player );
   }
-  makeMove( player, rows, cols, board[ rows ][ cols ], move );
+  makeMove( player, rows, cols, board, move );
 }
 bool makeMove( char player, int rows, int cols,
                char board[ rows ][ cols ], int move )
@@ -135,12 +135,14 @@ void computerMove( int rows, int cols, char board[ rows ][ cols ])
     for( int j = 0; j < cols; j++ ){
       for( int dr = -1; dr <= 1; dr++ ){
         for( int dc = -1; dc <= 1; dc++ ){
-          if( dr == 0 && dc == 0)
+          if( dr == 0 && dc == 0){
             continue;
+          }
           if( winner( 'O', rows, cols, board, i, j, dr, dc, 3 ) ){
             // Goes for the win, if possible
-            if( makeMove( 'O', rows, cols, board, 3 * dc + j) )
+            if( makeMove( 'O', rows, cols, board, 3 * dc + (j+1)) ){
               return;
+            }
           }
         }
       }
@@ -151,34 +153,45 @@ void computerMove( int rows, int cols, char board[ rows ][ cols ])
     for( int j = 0; j < cols; j++ ){
       for( int dr = -1; dr <= 1; dr++ ){
         for( int dc = -1; dc <= 1; dc++ ){
-          if( dr == 0 && dc == 0)
+          if( dr == 0 && dc == 0){
             continue;
+          }
           if( winner( 'X', rows, cols, board, i, j, dr, dc, 3 ) ){
             // Goes for the block, if possible
-            if( makeMove( 'O', rows, cols, board, 3 * dc + j) )
+            if( makeMove( 'O', rows, cols, board, 3 * dc + (j+1)) ){
               return;
-          }
-        }
-      }
-    }
-  }
-  // Otherwise, makes best possible move for computer
-  for( int i = 0; i < rows; i++ ){
-    for( int j = 0; j < cols; j++ ){
-      for( int dr = -1; dr <= 1; dr++ ){
-        for( int dc = -1; dc <= 1; dc++ ){
-          if( dr == 0 && dc == 0)
-            continue;
-          for( int x = 2; x > 0; x++ ){
-            if( winner( 'O', rows, cols, board, i, j, dr, dc, x ) ){
-              // Goes for the best possible move
-              if( makeMove( 'O', rows, cols, board, x * dc + j) )
-                return;
             }
           }
         }
       }
     }
   }
-
+  // Makes best possible move for computer
+  for( int i = 0; i < rows; i++ ){
+    for( int j = 0; j < cols; j++ ){
+      for( int dr = -1; dr <= 1; dr++ ){
+        for( int dc = -1; dc <= 1; dc++ ){
+          if( dr == 0 && dc == 0){
+            continue;
+          }
+          for( int x = 3; x > 1; x-- ){
+            if( winner( 'O', rows, cols, board, i, j, dr, dc, x ) ){
+              // Goes for the best possible move
+              if( makeMove( 'O', rows, cols, board, x * dc + (j+1)) ){
+                return;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  // Otherwise, make move in first available space
+  for( int i = 0; i < rows; i++ ){
+    for( int j = 0; j < cols; j++ ){
+      if( makeMove( 'O', rows, cols, board, j+1 ) ){
+        return;
+      }
+    }
+  }
 }
