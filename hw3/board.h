@@ -74,7 +74,7 @@ bool winner( char player, int rows, int cols, char board[ rows ][ cols ],
 /**
   This function prompts the user for their next move using the given
   player character to indicate which player has the next move (X or O).
-  If the column input is valid, the function will make the given move,
+  If the column input is valid, the function will call makeMove,
   otherwise it will print the required error message and prompt the user
   again for a move. The program will terminate on EOF on standard input
 
@@ -82,9 +82,21 @@ bool winner( char player, int rows, int cols, char board[ rows ][ cols ],
   @param cols Number of columns the board has.
   @param board The game board.
 */
-void makeMove( char player, int rows, int cols, 
+void promptMove( char player, int rows, int cols, 
                char board[ rows ][ cols ] );
+/**
+  This function makes the given move on a board according to the player,
+  if it cannot, it will return false.
 
+  @param rows Number of rows the board has
+  @param cols Number of columns the board has.
+  @param board The game board.
+  @param move The move (col number) that is to be made
+
+  @return true if the move was made, false otherwise.
+*/
+bool makeMove( char player, int rows, int cols, 
+               char board[ rows ][ cols ], int move );
 /**
   This function looks for the best possible move for Player O to either
   win or to prevent the opponenet from winning, if it can.

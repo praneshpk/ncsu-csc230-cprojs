@@ -95,7 +95,7 @@ bool winner( char player, int rows, int cols, char board[ rows ][ cols ],
     return xcount == len || ocount == len;
 
 }
-void makeMove( char player, int rows, int cols, 
+void promptMove( char player, int rows, int cols, 
                char board[ rows ][ cols ] )
 {
   // Prompts user for a valid move
@@ -114,19 +114,71 @@ void makeMove( char player, int rows, int cols,
     while((eof = fgetc(stdin)) != '\n');
     printf( "Invalid move\n%c move> ", player );
   }
-
-  // Make move on available spot
+  makeMove( player, rows, cols, board[ rows ][ cols ], move );
+}
+bool makeMove( char player, int rows, int cols,
+               char board[ rows ][ cols ], int move )
+{
+  // Makes the available move on the board
   for( int i = rows - 1; i >= 0; i-- ){
     if( board[ i ][ move-1 ] == ' ' ){
       board[ i ][ move-1 ] = player;
-      break;
+      return true;
     }
   }
+  return false;
 }
 void computerMove( int rows, int cols, char board[ rows ][ cols ])
 {
+  // Checks first to see if the computer can win
   for( int i = 0; i < rows; i++ ){
     for( int j = 0; j < cols; j++ ){
-
+      for( int dr = -1; dr <= 1; dr++ ){
+        for( int dc = -1; dc <= 1; dc++ ){
+          if( dr == 0 && dc == 0)
+            continue;
+          if( winner( 'O', rows, cols, board, i, j, dr, dc, 3 ) ){
+            // Goes for the win, if possible
+            if( makeMove( 'O', rows, cols, board, 3 * dc + j) )
+              return;
+          }
+        }
+      }
+    }
+  }
+  // Checks to see if the computer can block
+  for( int i = 0; i < rows; i++ ){
+    for( int j = 0; j < cols; j++ ){
+      for( int dr = -1; dr <= 1; dr++ ){
+        for( int dc = -1; dc <= 1; dc++ ){
+          if( dr == 0 && dc == 0)
+            continue;
+          if( winner( 'X', rows, cols, board, i, j, dr, dc, 3 ) ){
+            // Goes for the block, if possible
+            if( makeMove( 'O', rows, cols, board, 3 * dc + j) )
+              return;
+          }
+        }
+      }
+    }
+  }
+  // Otherwise, makes best possible move for computer
+  for( int i = 0; i < rows; i++ ){
+    for( int j = 0; j < cols; j++ ){
+      for( int dr = -1; dr <= 1; dr++ ){
+        for( int dc = -1; dc <= 1; dc++ ){
+          if( dr == 0 && dc == 0)
+            continue;
+          for( int x = 2; x > 0; x++ ){
+            if( winner( 'O', rows, cols, board, i, j, dr, dc, x ) ){
+              // Goes for the best possible move
+              if( makeMove( 'O', rows, cols, board, x * dc + j) )
+                return;
+            }
+          }
+        }
+      }
+    }
+  }
 
 }
