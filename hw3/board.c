@@ -49,14 +49,14 @@ int gameStatus( int rows, int cols, char board[ rows ][ cols ] )
   // Checks if there is a winner in all directions
   for( int i = 0; i < rows; i++ ){
     for( int j = 0; j < cols; j++ ){ 
-      if( winner( rows, cols, board, i, j, -1, -1 ) ||
-          winner( rows, cols, board, i, j, -1, 1 ) ||
-          winner( rows, cols, board, i, j, 1, 1 ) ||
-          winner( rows, cols, board, i, j, 1, -1 ) ||
-          winner( rows, cols, board, i, j, 0, 1 ) ||
-          winner( rows, cols, board, i, j, 0, -1 ) ||
-          winner( rows, cols, board, i, j, 1, 0 ) ||
-          winner( rows, cols, board, i, j, -1, 0 ) ){
+      if( winner( 'N', rows, cols, board, i, j, -1, -1, RUNLEN ) ||
+          winner( 'N', rows, cols, board, i, j, -1, 1, RUNLEN ) ||
+          winner( 'N', rows, cols, board, i, j, 1, 1, RUNLEN ) ||
+          winner( 'N', rows, cols, board, i, j, 1, -1, RUNLEN ) ||
+          winner( 'N', rows, cols, board, i, j, 0, 1, RUNLEN ) ||
+          winner( 'N', rows, cols, board, i, j, 0, -1, RUNLEN ) ||
+          winner( 'N', rows, cols, board, i, j, 1, 0, RUNLEN ) ||
+          winner( 'N', rows, cols, board, i, j, -1, 0, RUNLEN ) ){
         return 1;
       }
     }
@@ -64,14 +64,14 @@ int gameStatus( int rows, int cols, char board[ rows ][ cols ] )
 
   return 0;
 }
-bool winner( int rows, int cols, char board[ rows ][ cols ],
-             int startRow, int startCol, int dRow, int dCol )
+bool winner( char player, int rows, int cols, char board[ rows ][ cols ],
+             int startRow, int startCol, int dRow, int dCol, int len )
 {
   // Number of X and O symbols in this sequence of locations
   int xcount = 0, ocount = 0;
 
   // Walk down the sequence of board spaces.
-  for ( int k = 0; k < RUNLEN; k++ ) {
+  for ( int k = 0; k < len; k++ ) {
 
     // Figure out its row and column index and make sure it's on the board.
     int r = startRow + k * dRow;
@@ -86,8 +86,14 @@ bool winner( int rows, int cols, char board[ rows ][ cols ],
       ocount++;
   }
 
-  // We have a winner if it's all Xs or Os.
-  return xcount == RUNLEN || ocount == RUNLEN;
+  // We have a match depending on what players we are looking at.
+  if( player == 'X' )
+    return xcount == len;
+  else if( player == 'O' )
+    return ocount == len;
+  else
+    return xcount == len || ocount == len;
+
 }
 void makeMove( char player, int rows, int cols, 
                char board[ rows ][ cols ] )
@@ -119,5 +125,8 @@ void makeMove( char player, int rows, int cols,
 }
 void computerMove( int rows, int cols, char board[ rows ][ cols ])
 {
+  for( int i = 0; i < rows; i++ ){
+    for( int j = 0; j < cols; j++ ){
+
 
 }
