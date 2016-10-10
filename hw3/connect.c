@@ -58,15 +58,15 @@ int main( int argc, char *argv[] )
     else
       player = 'X';
 
-    printBoard( rows, cols, board );
-
     // Prompt player for move, or autoplay based on program argument
     if ( player == 'O' &&
          argc == 2 &&
          strcmp( argv[1], "-a" ) == 0 )
       computerMove( rows, cols, board );
-    else
+    else{
+      printBoard( rows, cols, board );
       makeMove( player, rows, cols, board );
+    }
     
   }
   printBoard( rows, cols, board );

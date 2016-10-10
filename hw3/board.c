@@ -119,5 +119,5 @@ void makeMove( char player, int rows, int cols,
 }
 void computerMove( int rows, int cols, char board[ rows ][ cols ])
 {
-  
+
 }
