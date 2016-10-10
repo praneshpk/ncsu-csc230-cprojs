@@ -135,6 +135,7 @@ bool makeMove( char player, int rows, int cols,
 }
 void computerMove( int rows, int cols, char board[ rows ][ cols ])
 {
+  int move;
   // Checks first to see if the computer can win
   for( int i = 0; i < rows; i++ ){
     for( int j = 0; j < cols; j++ ){
@@ -145,7 +146,8 @@ void computerMove( int rows, int cols, char board[ rows ][ cols ])
           }
           if( winner( 'O', rows, cols, board, i, j, dr, dc, 3 ) ){
             // Goes for the win, if possible
-            if( makeMove( 'O', rows, cols, board, 3 * dc + (j+1)) ){
+            if( makeMove( 'O', rows, cols, board, (move = 3 * dc + j + 1 )) ){
+              printf("Computer move %d", move);
               return;
             }
           }
@@ -163,7 +165,8 @@ void computerMove( int rows, int cols, char board[ rows ][ cols ])
           }
           if( winner( 'X', rows, cols, board, i, j, dr, dc, 3 ) ){
             // Goes for the block, if possible
-            if( makeMove( 'O', rows, cols, board, 3 * dc + (j+1)) ){
+            if( makeMove( 'O', rows, cols, board, (move = 3 * dc + j + 1 )) ){
+              printf("Computer move %d", move);
               return;
             }
           }
@@ -182,7 +185,8 @@ void computerMove( int rows, int cols, char board[ rows ][ cols ])
           for( int x = 3; x > 1; x-- ){
             if( winner( 'O', rows, cols, board, i, j, dr, dc, x ) ){
               // Goes for the best possible move
-              if( makeMove( 'O', rows, cols, board, x * dc + (j+1)) ){
+              if( makeMove( 'O', rows, cols, board, (move = x * dc + j + 1 )) ){
+                printf("Computer move %d", move);                
                 return;
               }
             }
@@ -194,7 +198,8 @@ void computerMove( int rows, int cols, char board[ rows ][ cols ])
   // Otherwise, make move in first available space
   for( int i = 0; i < rows; i++ ){
     for( int j = 0; j < cols; j++ ){
-      if( makeMove( 'O', rows, cols, board, j+1 ) ){
+      if( makeMove( 'O', rows, cols, board, ( move = j + 1 )) ){
+        printf("Computer move %d", move);
         return;
       }
     }
