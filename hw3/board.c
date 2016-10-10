@@ -98,9 +98,14 @@ bool winner( char player, int rows, int cols, char board[ rows ][ cols ],
 void promptMove( char player, int rows, int cols, 
                char board[ rows ][ cols ] )
 {
+
   // Prompts user for a valid move
   int move;
   char eof;
+
+  // Flush standard input 
+  while((eof = fgetc(stdin)) != '\n');
+
   printf( "%c move> ", player );
   while( ( eof = scanf( "%d", &move ) ) != 1 ||
          ( move-1 < 0 || move-1 >= cols ) ||
@@ -110,7 +115,7 @@ void promptMove( char player, int rows, int cols,
     if( eof == EOF )
       exit(0);
 
-    // Flush standard input 
+    // Flush standard input again and print error msg
     while((eof = fgetc(stdin)) != '\n');
     printf( "Invalid move\n%c move> ", player );
   }
