@@ -49,14 +49,15 @@ void clearBoard( int rows, int cols, char board[ rows ][ cols ] );
 int gameStatus( int rows, int cols, char board[ rows ][ cols ] );
 
 /**
-   Return true if there's a winning sequence of markers starting at
+   Return true if there's a sequence of markers, given by len, starting at
    the given board location, startRow, startCol location, either a
-   sequence of X characters or O characters.  The dRow and dCol
-   parameters indicate what direction to look, with dRow giving
-   change-in-row for each step and dCol giving the change-in-column.
-   For example, a dRow of -1 and a dCol of 1 would loo for a sequence
-   of markers starting from the given start location and diagonally up
-   to the right.
+   sequence of X characters or O characters (according to what player
+   is passed into the function.  The dRow and dCol parameters indicate
+   what direction to look, with dRow giving change-in-row for each step and
+   dCol giving the change-in-column.
+
+   @param player 'X' or 'O' that the function is looking for,
+          or 'N' for either marker
    @param rows Number of rows the board has.
    @param cols Number of columns the board has.
    @param board The game board.
@@ -64,15 +65,16 @@ int gameStatus( int rows, int cols, char board[ rows ][ cols ] );
    @param startCol Column start position to look for a win.
    @param dRow Direction to move vertically looking for a win.
    @param dCol Direction to move horizontally looking for a win.
-   @return true if there's a win in the given board location.
+   @param len The length of the Connect N sequence
+   @return true if there's a match in the given board location.
  */
-bool winner( int rows, int cols, char board[ rows ][ cols ],
-             int startRow, int startCol, int dRow, int dCol );
+bool winner( char player, int rows, int cols, char board[ rows ][ cols ],
+             int startRow, int startCol, int dRow, int dCol, int len );
 
 /**
   This function prompts the user for their next move using the given
   player character to indicate which player has the next move (X or O).
-  If the column input is valid, the function will make the given move,
+  If the column input is valid, the function will call makeMove,
   otherwise it will print the required error message and prompt the user
   again for a move. The program will terminate on EOF on standard input
 
@@ -80,9 +82,21 @@ bool winner( int rows, int cols, char board[ rows ][ cols ],
   @param cols Number of columns the board has.
   @param board The game board.
 */
-void makeMove( char player, int rows, int cols, 
+void promptMove( char player, int rows, int cols, 
                char board[ rows ][ cols ] );
+/**
+  This function makes the given move on a board according to the player,
+  if it cannot, it will return false.
 
+  @param rows Number of rows the board has
+  @param cols Number of columns the board has.
+  @param board The game board.
+  @param move The move (col number) that is to be made
+
+  @return true if the move was made, false otherwise.
+*/
+bool makeMove( char player, int rows, int cols, 
+               char board[ rows ][ cols ], int move );
 /**
   This function looks for the best possible move for Player O to either
   win or to prevent the opponenet from winning, if it can.
