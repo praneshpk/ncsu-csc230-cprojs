@@ -23,29 +23,35 @@ int main()
   Schedule *sched = createSchedule();
 
   // Sets input buffer for command
-  char buffer[15]; 
+  char buffer[22]; 
   int ch;
 
   // Serves as a stopper for the while loop
   bool quit = false;
   while( !quit ) {
+    // Takes user input for a command
     printf("> ");
+    if( scanf("%14s", buffer) == EOF )
+      exit(0);
 
-    scanf("%14s", buffer);
+    // Add command
     if( strcmp(buffer, "add") == 0 ){
       // Frees Activity if parameters are invalid
       Activity *act = readActivity();
       if( !act ) {
-        free(act);
+        freeActivity(act);
         // Flush input and print error
         while ((ch = getchar() != '\n') && (ch != EOF));
         printf("Invalid command\n");
       }
       else {
-        if( !addActivity( sched, act ) )
+        if( !addActivity( sched, act ) ){
+          freeActivity(act);
           printf("Schedule conflict\n");
+        }
       }
     }
+    // Remove command
     else if( strcmp(buffer, "remove") == 0){
       if( scanf("%d", &ch) == 1 ){
         if( !removeActivity( sched, ch ) )
@@ -57,11 +63,18 @@ int main()
         printf("Invalid command\n");
       }
     }
+    // Schedule command
     else if( strcmp(buffer, "schedule") == 0 ){
-      printf("%s\n",buffer);
+      printSchedule( sched, matchLeader, NULL);
     }
+    // Leader command
     else if( strcmp(buffer, "leader") == 0 ){
-      printf("%s\n",buffer);
+      scanf("%21s", buffer);
+      if( strlen(buffer) > 20 )
+        printf("Invalid command\n");
+      else
+        printSchedule( sched, matchLeader, buffer );
+      while ((ch = getchar() != '\n') && (ch != EOF));
     }
     else if( strcmp(buffer, "at") == 0 ){
       printf("%s\n",buffer);

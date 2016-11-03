@@ -39,6 +39,19 @@ typedef struct {
 Activity *readActivity();
 
 /**
+  This is a compare function to be used with qsort(). It will take two Activities 
+  and return a value the way strcmp does by looking at the startTime of both activities
+  
+  @param a Activity 1
+  @param b Activity 2
+
+  @return negative value if the first activity is earlier
+          positive value if the first activity is later
+          zero if they are at the same time
+*/
+int compare( const void *a, const void *b );
+
+/**
   This will free the dynamically allocated memory used to store an activity,
   including the structure itself and the title.
 

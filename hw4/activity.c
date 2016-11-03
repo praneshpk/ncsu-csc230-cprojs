@@ -63,9 +63,7 @@ Activity *readActivity()
   int cap = INIT_CAPACITY;
 
   Activity *act = (Activity *)malloc( sizeof( Activity ) );
-  //memset(act, '\0', sizeof( Activity ));
   act->title = (char *)malloc( cap * sizeof( char ) );
-  //memset(act->title, '\0', cap * sizeof( char ));
 
   // Writes to title
   while( ( ch = getchar()) !='\n' ){
@@ -78,7 +76,6 @@ Activity *readActivity()
     }
   }
   act->title[ i ] = '\0';
-  printf( "%s\n", act->title);
 
   // Sets fields in activity
   act->startTime = start;
@@ -87,10 +84,12 @@ Activity *readActivity()
   
   return act;
 }
+int compare( const void *a, const void *b )
+{
+  return( (*(Activity **) a)->startTime - (*(Activity **)b)->startTime );
+}
 void freeActivity( Activity *act )
 {
   free(act->title);
-  printf("act->title freed\n\n");
   free(act);
-  printf("act freed\n\n");
 }

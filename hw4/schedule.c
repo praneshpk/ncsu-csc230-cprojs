@@ -9,26 +9,24 @@ Schedule *createSchedule()
   sched->capacity = INIT_CAPACITY;
 
   // Sets the initial size of the Schedule list
-  sched->size = -1;
+  sched->size = 0;
 
   // Sets the initial NextID for an activity
-  sched->nextID = 0;
+  sched->nextID = 1;
 
   // Allocates data for the list array in Schedule
-  sched->list = (Activity *)malloc( sched->capacity * sizeof( Activity ) );
+  sched->list = (Activity ** )malloc( sched->capacity * sizeof( Activity * ) );
 
   return sched;
 }
 void freeSchedule( Schedule *sched )
 {
-  //sched->list = NULL;
-  printf("size %d\n",sched->size);
-  for( int i = 0; i < sched->size; i++ ){
-    freeActivity( &sched->list[i] );
-    printf("freed activity %d\n\n",i);
-  }
-  //free(sched->list);
-  printf("freed list\n");
+  // Frees each element in Schedule List
+  for( int i = 0; i < sched->size; i++ )
+    freeActivity( sched->list[i] );
+  
+  // Frees the list array and Schedule
+  free(sched->list);
   free(sched);
 }
 
@@ -37,13 +35,13 @@ bool addActivity( Schedule *sched, Activity *act )
   // Runs through the list of activities
   for( int i = 0; i < sched->size; i++ ){
     // Checks if there is the same leader
-    if( strcmp(act->leader, sched->list[i].leader) == 0){
+    if( strcmp(act->leader, sched->list[i]->leader) == 0){
       // Frees activity if there is an overlap
-      if(  act->startTime == sched->list[i].startTime ||
-          ( act->startTime > sched->list[i].startTime &&
-            act->startTime < sched->list[i].endTime ) || 
-          ( act->endTime > sched->list[i].startTime &&
-            act->endTime < sched->list[i].endTime ) ) {
+      if(  act->startTime == sched->list[i]->startTime ||
+          ( act->startTime > sched->list[i]->startTime &&
+            act->startTime < sched->list[i]->endTime ) || 
+          ( act->endTime > sched->list[i]->startTime &&
+            act->endTime < sched->list[i]->endTime ) ) {
         freeActivity(act);
         return false;
       }
@@ -52,31 +50,65 @@ bool addActivity( Schedule *sched, Activity *act )
   // Resizes list if needed
   if( sched->size >= sched->capacity ){
     sched->capacity *= 2;
-    sched->list = realloc( sched->list, sched->capacity * sizeof( Activity ) );
+    sched->list = realloc( sched->list, sched->capacity * sizeof( Activity * ) );
   }
   // Sets ID for Activity and increments next ID
   act->id = (sched->nextID)++;
-  // Adds activity to schedule
-  sched->list[++(sched->size)] = *act;
-  // Increments schedule size
-  //(sched->size)++;
-  printf("act id: %d, nextid: %d\n",act->id, sched->nextID);
+  
+  // Adds activity to schedule and increments schedule size
+  sched->list[(sched->size)++] = act;
+
   return true;
 }
 bool removeActivity( Schedule *sched, int id )
 {
-  Activity *list = sched->list;
   // Runs through the list of activities
-  //for( int i = 0; i < sched->size; i++ ){
-  while(sched->list){
+  for( int i = 0; i < sched->size; i++ ){
     // Remove activity if ID matches
-    if( sched->list->id == id ){
-      printf("%d freed \n",sched->list->id);
-      freeActivity( sched->list++ );
-      sched->list = list;
-      //(sched->size)--;
+    if( sched->list[i]->id == id ){
+      
+      // Allocating memory for a temporary list with one less element
+      Activity **temp = ( Activity ** )malloc( ( sched->size - 1 ) * sizeof( Activity * ) );
+     
+      // Copies every element before the Activity, if it's not the first element
+      if( i != 0)
+        memcpy(temp, sched->list,  i  * sizeof( Activity * ) );
+      // Copies every element after the Activity, if it's not the last element
+      if( i != (sched->size - 1 ) )
+        memcpy(temp+i, sched->list + i + 1, ( sched->size - i -1 ) * sizeof( Activity * ));
+      
+      // Frees the Activity and Schedule list
+      freeActivity( sched->list[i] );  
+      free( sched->list );
+
+      // Copies the temporary list to the new list
+      sched->list = temp;
+      sched->size --;
+      
       return true;
     }
   }
   return false;
+}
+bool matchLeader( Activity *act, void *lead )
+{
+  if( lead == NULL )
+    return true;
+  else if( strcmp( act->leader, (char *) lead ) == 0)
+    return true;
+  else
+    return false;
+}
+void printSchedule( Schedule *sched, bool (*test)(Activity *, void *arg), void *arg )
+{
+  putchar('\n');
+  qsort( sched->list, sched->size, sizeof( Activity * ), compare );
+
+  for( int i = 0; i < sched->size; i++ ){
+    if( ( *test )( sched->list[i], arg ) ){
+      printf("%2d:%02d %2d:%02d (%03d) %s %s\n", sched->list[i]->startTime / 60, sched->list[i]->startTime % 60,
+            sched->list[i]->endTime / 60, sched->list[i]->endTime % 60, sched->list[i]->id,
+            sched->list[i]->leader, sched->list[i]->title );
+    }
+  }
 }

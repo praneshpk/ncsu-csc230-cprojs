@@ -17,7 +17,7 @@
 typedef struct {
   int capacity;
   int size;
-  Activity *list;
+  Activity **list;
   int nextID;
 } Schedule;
 
@@ -54,7 +54,8 @@ void freeSchedule( Schedule *sched );
 bool addActivity( Schedule *sched, Activity *act );
 
 /**
-  This function will remove the activity defined by the given ID
+  This function will remove the activity defined by the given ID and
+  free it from memory
 
   @param sched The given Schedule
   @param id The given Activity ID
@@ -62,6 +63,19 @@ bool addActivity( Schedule *sched, Activity *act );
   @return true if successful, false if the id doesn't exist
 */
 bool removeActivity( Schedule *sched, int id );
+
+/**
+  This function will check if the given activity matches the given
+  leader string. It will always return true if a NULL is passed into
+  lead.
+
+  @param act The given Activity
+  @param lead The given leader string
+  
+  @return true if there is a match or the lead is NULL
+          false otherwise
+*/
+bool matchLeader( Activity *act, void *lead );
 
 /**
   This goes through the list of activities and prints them in the right
