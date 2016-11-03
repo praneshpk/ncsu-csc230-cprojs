@@ -40,16 +40,42 @@ Activity *readActivity();
 
 /**
   This is a compare function to be used with qsort(). It will take two Activities 
-  and return a value the way strcmp does by looking at the startTime of both activities
+  and return a value the way strcmp does by looking at the startTime of both activities.
+  If the start times are the same, it will return the difference of endTimes
   
   @param a Activity 1
   @param b Activity 2
 
-  @return negative value if the first activity is earlier
-          positive value if the first activity is later
-          zero if they are at the same time
+  @return negative value if the first activity comes before
+          positive value if the first activity comes after
+          zero if they are at the same time and length
 */
 int compare( const void *a, const void *b );
+
+/**
+  This function will check if the given activity matches the given
+  leader string. It will always return true if a NULL is passed into
+  lead.
+
+  @param act The given Activity
+  @param lead The given leader string
+  
+  @return true if there is a match or the lead is NULL
+          false otherwise
+*/
+bool matchLeader( Activity *act, void *lead );
+
+/**
+  This function will check if the given activity starts at the given
+  time or is before the given time and end after the given time.
+
+  @param act The given Activity
+  @param tm The given time
+  
+  @return true if there is a match
+          false otherwise
+*/
+bool matchTime( Activity *act, void *tm );
 
 /**
   This will free the dynamically allocated memory used to store an activity,

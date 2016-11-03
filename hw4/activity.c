@@ -47,12 +47,12 @@ Activity *readActivity()
     if( ( ch = getchar()) == '\n' ||
           ch == ' ' ||
           i == 21  ){
+      // Adds NULL terminator
       buffer[ i+1 ] = '\0';
       break;
     }
-    else{
+    else
       buffer[i] = ch;
-    }
   }
   if( strlen(buffer) > 20 ){
     return NULL;
@@ -86,7 +86,29 @@ Activity *readActivity()
 }
 int compare( const void *a, const void *b )
 {
-  return( (*(Activity **) a)->startTime - (*(Activity **)b)->startTime );
+  int res = (*(Activity **) a)->startTime - (*(Activity **)b)->startTime;
+  if( res == 0 )
+    return (*(Activity **) b)->endTime - (*(Activity **) a)->endTime;
+  else
+    return res;
+}
+bool matchLeader( Activity *act, void *lead )
+{
+  if( lead == NULL )
+    return true;
+  else if( strcmp( act->leader, (char *) lead ) == 0)
+    return true;
+  else
+    return false;
+}
+bool matchTime( Activity *act, void *tm )
+{
+  if( ( act->startTime == *(int *)tm ||
+        act->startTime < *(int *)tm ) &&
+        act->endTime > *(int *)tm )
+    return true;
+  else
+    return false;
 }
 void freeActivity( Activity *act )
 {

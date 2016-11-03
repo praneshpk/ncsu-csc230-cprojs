@@ -65,19 +65,6 @@ bool addActivity( Schedule *sched, Activity *act );
 bool removeActivity( Schedule *sched, int id );
 
 /**
-  This function will check if the given activity matches the given
-  leader string. It will always return true if a NULL is passed into
-  lead.
-
-  @param act The given Activity
-  @param lead The given leader string
-  
-  @return true if there is a match or the lead is NULL
-          false otherwise
-*/
-bool matchLeader( Activity *act, void *lead );
-
-/**
   This goes through the list of activities and prints them in the right
   order. The program runs the test function to make sure it should print
   the activity or not.

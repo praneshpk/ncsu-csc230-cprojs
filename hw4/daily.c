@@ -24,7 +24,7 @@ int main()
 
   // Sets input buffer for command
   char buffer[22]; 
-  int ch;
+  int ch, h, m;
 
   // Serves as a stopper for the while loop
   bool quit = false;
@@ -72,12 +72,32 @@ int main()
       scanf("%21s", buffer);
       if( strlen(buffer) > 20 )
         printf("Invalid command\n");
+      // Prints schedule with leader filter
       else
         printSchedule( sched, matchLeader, buffer );
       while ((ch = getchar() != '\n') && (ch != EOF));
     }
+    // At command
     else if( strcmp(buffer, "at") == 0 ){
-      printf("%s\n",buffer);
+      // Checks if time is valid
+      if( scanf("%d:", &h) != 1 ||
+          h < 0 ||
+          h > 23 ) {
+        printf("Invalid command\n");
+      }
+      else if( scanf("%d", &m) != 1 ||
+          m < 0 ||
+          m > 59 ){
+        printf("Invalid command\n");
+      }
+      // Prints schedule with time filter
+      else{
+        int tm = h * 60 + m;
+        printSchedule( sched, matchTime, &tm );
+      }
+
+      while ((ch = getchar() != '\n') && (ch != EOF));
+
     }
     else if( strcmp(buffer, "match") == 0 ){
       printf("%s\n",buffer);

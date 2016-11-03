@@ -90,15 +90,6 @@ bool removeActivity( Schedule *sched, int id )
   }
   return false;
 }
-bool matchLeader( Activity *act, void *lead )
-{
-  if( lead == NULL )
-    return true;
-  else if( strcmp( act->leader, (char *) lead ) == 0)
-    return true;
-  else
-    return false;
-}
 void printSchedule( Schedule *sched, bool (*test)(Activity *, void *arg), void *arg )
 {
   putchar('\n');
