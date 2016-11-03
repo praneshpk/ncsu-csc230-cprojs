@@ -95,12 +95,21 @@ void printSchedule( Schedule *sched, bool (*test)(Activity *, void *arg), void *
   putchar('\n');
   qsort( sched->list, sched->size, sizeof( Activity * ), compare );
 
+  // Loop to find largest leader strlen to format results
+  int len = 0;
   for( int i = 0; i < sched->size; i++ ){
     // Uses test function to filter results
     if( ( *test )( sched->list[i], arg ) ){
+      // Sets len to largest length
+      if( len < strlen(sched->list[i]->leader) )
+        len = strlen(sched->list[i]->leader);
+    }
+  }
+  for( int i = 0; i < sched->size; i++ ){
+    if( ( *test )( sched->list[i], arg ) ){
       // Prints an activity
-      printf("%2d:%02d %2d:%02d (%03d) %s %s\n", sched->list[i]->startTime / 60, sched->list[i]->startTime % 60,
-            sched->list[i]->endTime / 60, sched->list[i]->endTime % 60, sched->list[i]->id,
+      printf("%2d:%02d %2d:%02d (%03d) %-*s %s\n", sched->list[i]->startTime / 60, sched->list[i]->startTime % 60,
+            sched->list[i]->endTime / 60, sched->list[i]->endTime % 60, sched->list[i]->id, len,
             sched->list[i]->leader, sched->list[i]->title );
     }
   }

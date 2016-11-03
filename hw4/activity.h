@@ -42,14 +42,13 @@ Activity *readActivity();
 /**
   This is a compare function to be used with qsort(). It will take two Activities 
   and return a value the way strcmp does by looking at the startTime of both activities.
-  If the start times are the same, it will return the difference of endTimes
+  If the start times are the same, it will do a strcmp of the Activity leader
   
   @param a Activity 1
   @param b Activity 2
 
   @return negative value if the first activity comes before
           positive value if the first activity comes after
-          zero if they are at the same time and length
 */
 int compare( const void *a, const void *b );
 

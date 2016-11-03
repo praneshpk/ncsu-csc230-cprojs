@@ -6,25 +6,35 @@ Activity *readActivity()
   int h, m, start, end;
 
   // Checks if start time is valid
-  if( scanf("%d:", &h) != 1 ||
+  if( scanf("%d", &h) != 1 ||
       h < 0 ||
       h > 23 ) {
     return NULL;
+  }
+  // Removes spaces around :
+  if( getchar() != ':'){
+    getchar();
+    getchar();
   }
   if( scanf("%d", &m) != 1 ||
       m < 0 ||
       m > 59 ){
     return NULL;
   }
-  
+
   // Sets the start time variable in minutes
   start = h * 60 + m;
 
   // Checks if end time is valid
-  if( scanf("%d:", &h) != 1 ||
+  if( scanf("%d", &h) != 1 ||
       h < 0 ||
       h > 23 ) {
     return NULL;
+  }
+  // Removes spaces around :
+  if( getchar() != ':'){
+    getchar();
+    getchar();
   }
   if( scanf("%d", &m) != 1 ||
       m < 0 ||
@@ -48,11 +58,12 @@ Activity *readActivity()
           ch == ' ' ||
           i == 21  ){
       // Adds NULL terminator
-      buffer[ i+1 ] = '\0';
+      buffer[ i ] = '\0';
       break;
     }
-    else
+    else{
       buffer[i] = ch;
+    }
   }
   if( strlen(buffer) > 20 ){
     return NULL;
@@ -68,7 +79,6 @@ Activity *readActivity()
   // Writes to title
   while( ( ch = getchar()) !='\n' ){
     act->title[ i++ ] = ch;
-
     // Reallocates data if necessary
     if( i >= cap ){
       cap *= 2;
@@ -89,8 +99,9 @@ int compare( const void *a, const void *b )
   // Computes difference in start times
   int res = (*(Activity **) a)->startTime - (*(Activity **)b)->startTime;
   // Computes difference in if start time is the same
-  if( res == 0 )
-    return (*(Activity **) b)->endTime - (*(Activity **) a)->endTime;
+  if( res == 0 ){
+    return strcmp( (*(Activity **) a)->leader, (*(Activity **) b)->leader );
+  }
   else
     return res;
 }
