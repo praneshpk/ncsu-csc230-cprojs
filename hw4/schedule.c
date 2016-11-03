@@ -96,7 +96,9 @@ void printSchedule( Schedule *sched, bool (*test)(Activity *, void *arg), void *
   qsort( sched->list, sched->size, sizeof( Activity * ), compare );
 
   for( int i = 0; i < sched->size; i++ ){
+    // Uses test function to filter results
     if( ( *test )( sched->list[i], arg ) ){
+      // Prints an activity
       printf("%2d:%02d %2d:%02d (%03d) %s %s\n", sched->list[i]->startTime / 60, sched->list[i]->startTime % 60,
             sched->list[i]->endTime / 60, sched->list[i]->endTime % 60, sched->list[i]->id,
             sched->list[i]->leader, sched->list[i]->title );

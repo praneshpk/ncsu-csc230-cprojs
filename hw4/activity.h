@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 /** Initial capacity of the Schedule list */
 #define INIT_CAPACITY 10
@@ -76,6 +77,17 @@ bool matchLeader( Activity *act, void *lead );
           false otherwise
 */
 bool matchTime( Activity *act, void *tm );
+/**
+  This function will check if the keyword exists as a substring in the
+  title of the given Activity.
+
+  @param act The given Activity
+  @param key The given keyword
+
+  @return true if there is a match
+          false otherwise
+*/
+bool matchKeyword( Activity *act, void *key );
 
 /**
   This will free the dynamically allocated memory used to store an activity,

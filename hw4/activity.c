@@ -86,7 +86,9 @@ Activity *readActivity()
 }
 int compare( const void *a, const void *b )
 {
+  // Computes difference in start times
   int res = (*(Activity **) a)->startTime - (*(Activity **)b)->startTime;
+  // Computes difference in if start time is the same
   if( res == 0 )
     return (*(Activity **) b)->endTime - (*(Activity **) a)->endTime;
   else
@@ -110,8 +112,17 @@ bool matchTime( Activity *act, void *tm )
   else
     return false;
 }
+bool matchKeyword( Activity *act, void *key )
+{
+  if( strcasestr( act->title, key ) )
+    return true;
+  else
+    return false;
+}
 void freeActivity( Activity *act )
 {
+  // Frees title string in act
   free(act->title);
+  // Frees activity
   free(act);
 }

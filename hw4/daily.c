@@ -70,11 +70,12 @@ int main()
     // Leader command
     else if( strcmp(buffer, "leader") == 0 ){
       scanf("%21s", buffer);
+      // Prints schedule with leader filter, if valid
       if( strlen(buffer) > 20 )
         printf("Invalid command\n");
-      // Prints schedule with leader filter
       else
         printSchedule( sched, matchLeader, buffer );
+      // Flush input
       while ((ch = getchar() != '\n') && (ch != EOF));
     }
     // At command
@@ -91,16 +92,21 @@ int main()
         printf("Invalid command\n");
       }
       // Prints schedule with time filter
-      else{
+      else {
         int tm = h * 60 + m;
         printSchedule( sched, matchTime, &tm );
       }
-
+      // Flush input buffer
       while ((ch = getchar() != '\n') && (ch != EOF));
 
     }
     else if( strcmp(buffer, "match") == 0 ){
-      printf("%s\n",buffer);
+      scanf("%21s", buffer);
+      if( strlen(buffer) > 20 )
+        printf("Invalid command\n");
+      else
+        printSchedule( sched, matchKeyword, buffer );
+      while ((ch = getchar() != '\n') && (ch != EOF));
     }
     else if( strcmp(buffer, "quit") == 0 ){
       quit = true;
