@@ -28,25 +28,26 @@ int main()
 
   // Serves as a stopper for the while loop
   bool quit = false;
+
   while( !quit ) {
     // Takes user input for a command
     printf("> ");
-    if( scanf("%14s", buffer) == EOF )
-      exit(0);
+    if( scanf("%14s", buffer) == EOF ){
+      quit = true;
+      continue;
+    }
 
     // Add command
     if( strcmp(buffer, "add") == 0 ){
       // Frees Activity if parameters are invalid
       Activity *act = readActivity();
       if( !act ) {
-        freeActivity(act);
         // Flush input and print error
         while ((ch = getchar() != '\n') && (ch != EOF));
         printf("Invalid command\n");
       }
       else {
         if( !addActivity( sched, act ) ){
-          freeActivity(act);
           printf("Schedule conflict\n");
         }
       }
@@ -54,7 +55,7 @@ int main()
     // Remove command
     else if( strcmp(buffer, "remove") == 0){
       if( scanf("%d", &ch) == 1 ){
-        if( !removeActivity( sched, ch ) )
+        if( ! removeActivity( sched, ch ) )
           printf("Invalid command\n");
       }
       else{

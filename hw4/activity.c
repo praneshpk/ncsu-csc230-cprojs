@@ -13,7 +13,8 @@ Activity *readActivity()
   }
   // Removes spaces around :
   if( getchar() != ':'){
-    getchar();
+    if( getchar() !=':')
+      return NULL;
     getchar();
   }
   if( scanf("%d", &m) != 1 ||
@@ -33,7 +34,8 @@ Activity *readActivity()
   }
   // Removes spaces around :
   if( getchar() != ':'){
-    getchar();
+    if( getchar() !=':')
+      return NULL;
     getchar();
   }
   if( scanf("%d", &m) != 1 ||

@@ -22,8 +22,9 @@ Schedule *createSchedule()
 void freeSchedule( Schedule *sched )
 {
   // Frees each element in Schedule List
-  for( int i = 0; i < sched->size; i++ )
+  for( int i = 0; i < sched->size; i++ ){
     freeActivity( sched->list[i] );
+  }
   
   // Frees the list array and Schedule
   free(sched->list);
@@ -62,12 +63,20 @@ bool addActivity( Schedule *sched, Activity *act )
 }
 bool removeActivity( Schedule *sched, int id )
 {
+  Activity **temp = sched->list;
   // Runs through the list of activities
   for( int i = 0; i < sched->size; i++ ){
     // Remove activity if ID matches
-    if( sched->list[i]->id == id ){
-      
-      // Allocating memory for a temporary list with one less element
+    if( temp[i]->id == id ){
+      if(sched->size==1)
+        freeActivity(temp[0]);
+      for( int j = i; j< sched->size -1; j++){
+        if( j==0 )
+          freeActivity(temp[j]);
+        temp[j] = temp[j+1];
+      }
+      temp[sched->size-1] = NULL;
+      /*
       Activity **temp = ( Activity ** )malloc( ( sched->size - 1 ) * sizeof( Activity * ) );
      
       // Copies every element before the Activity, if it's not the first element
@@ -76,13 +85,14 @@ bool removeActivity( Schedule *sched, int id )
       // Copies every element after the Activity, if it's not the last element
       if( i != (sched->size - 1 ) )
         memcpy(temp+i, sched->list + i + 1, ( sched->size - i -1 ) * sizeof( Activity * ));
-      
+
       // Frees the Activity and Schedule list
-      freeActivity( sched->list[i] );  
+      freeActivity( sched->list[i] );
       free( sched->list );
 
       // Copies the temporary list to the new list
       sched->list = temp;
+      */
       sched->size --;
       
       return true;
