@@ -67,32 +67,15 @@ bool removeActivity( Schedule *sched, int id )
   // Runs through the list of activities
   for( int i = 0; i < sched->size; i++ ){
     // Remove activity if ID matches
-    if( temp[i]->id == id ){
-      if(sched->size==1)
+    if( temp[ i ]->id == id ){
+      if( sched->size == 1 )
         freeActivity(temp[0]);
       for( int j = i; j< sched->size -1; j++){
-        if( j==0 )
-          freeActivity(temp[j]);
-        temp[j] = temp[j+1];
+        if( j == 0 )
+          freeActivity( temp[j] );
+        temp[ j ] = temp[ j + 1 ];
       }
-      temp[sched->size-1] = NULL;
-      /*
-      Activity **temp = ( Activity ** )malloc( ( sched->size - 1 ) * sizeof( Activity * ) );
-     
-      // Copies every element before the Activity, if it's not the first element
-      if( i != 0)
-        memcpy(temp, sched->list,  i  * sizeof( Activity * ) );
-      // Copies every element after the Activity, if it's not the last element
-      if( i != (sched->size - 1 ) )
-        memcpy(temp+i, sched->list + i + 1, ( sched->size - i -1 ) * sizeof( Activity * ));
-
-      // Frees the Activity and Schedule list
-      freeActivity( sched->list[i] );
-      free( sched->list );
-
-      // Copies the temporary list to the new list
-      sched->list = temp;
-      */
+      temp[ sched->size - 1 ] = NULL;
       sched->size --;
       
       return true;
@@ -103,6 +86,7 @@ bool removeActivity( Schedule *sched, int id )
 void printSchedule( Schedule *sched, bool (*test)(Activity *, void *arg), void *arg )
 {
   putchar('\n');
+  // Sorts the schedule in order
   qsort( sched->list, sched->size, sizeof( Activity * ), compare );
 
   // Loop to find largest leader strlen to format results
