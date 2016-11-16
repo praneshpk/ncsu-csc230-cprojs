@@ -8,9 +8,9 @@
 
 #include "activity.h"
 
-/** 
+/**
   Defines the Schedule structure (aliased with a typedef) to be used as a container for a resizable
-  array of pointers to activities. The nextID variable is uesed to keep track of what ID will 
+  array of pointers to activities. The nextID variable is uesed to keep track of what ID will
   be assigned to the next activity added to Schedule. The capacity keeps track of the memory capacity of
   the Schedule list, while the size keeps track of how many items are in the Schedule list.
 */

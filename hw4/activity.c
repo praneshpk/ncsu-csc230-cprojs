@@ -6,18 +6,18 @@ Activity *readActivity()
   int h, m, start, end;
 
   // Checks if start time is valid
-  if( scanf("%d", &h) != 1 ||
+  if ( scanf("%d", &h) != 1 ||
       h < 0 ||
       h > 23 ) {
     return NULL;
   }
   // Removes spaces around :
-  if( getchar() != ':'){
-    if( getchar() !=':')
+  if ( getchar() != ':'){
+    if ( getchar() !=':')
       return NULL;
     getchar();
   }
-  if( scanf("%d", &m) != 1 ||
+  if ( scanf("%d", &m) != 1 ||
       m < 0 ||
       m > 59 ){
     return NULL;
@@ -27,18 +27,18 @@ Activity *readActivity()
   start = h * 60 + m;
 
   // Checks if end time is valid
-  if( scanf("%d", &h) != 1 ||
+  if ( scanf("%d", &h) != 1 ||
       h < 0 ||
       h > 23 ) {
     return NULL;
   }
   // Removes spaces around :
-  if( getchar() != ':'){
-    if( getchar() !=':')
+  if ( getchar() != ':'){
+    if ( getchar() !=':')
       return NULL;
     getchar();
   }
-  if( scanf("%d", &m) != 1 ||
+  if ( scanf("%d", &m) != 1 ||
       m < 0 ||
       m > 59 ){
     return NULL;
@@ -48,15 +48,15 @@ Activity *readActivity()
   end = h * 60 + m;
 
   // Checks if the range between the times are valid
-  if( end - start <= 0 )
+  if ( end - start <= 0 )
     return NULL;
 
   // Flush newline character
   getchar();
 
   // Checks if the leader string is a valid length
-  for(int i=0; i<22; i++ ){
-    if( ( ch = getchar()) == '\n' ||
+  for (int i=0; i<22; i++ ){
+    if ( ( ch = getchar()) == '\n' ||
           ch == ' ' ||
           i == 21  ){
       // Adds NULL terminator
@@ -67,7 +67,7 @@ Activity *readActivity()
       buffer[i] = ch;
     }
   }
-  if( strlen(buffer) > 20 ){
+  if ( strlen(buffer) > 20 ){
     return NULL;
   }
 
@@ -82,7 +82,7 @@ Activity *readActivity()
   while( ( ch = getchar()) !='\n' ){
     act->title[ i++ ] = ch;
     // Reallocates data if necessary
-    if( i >= cap ){
+    if ( i >= cap ){
       cap *= 2;
       act->title = realloc( act->title, cap * sizeof( char ));
     }
@@ -101,7 +101,7 @@ int compare( const void *a, const void *b )
   // Computes difference in start times
   int res = (*(Activity **) a)->startTime - (*(Activity **)b)->startTime;
   // Computes difference in if start time is the same
-  if( res == 0 ){
+  if ( res == 0 ){
     return strcmp( (*(Activity **) a)->leader, (*(Activity **) b)->leader );
   }
   else
@@ -109,16 +109,16 @@ int compare( const void *a, const void *b )
 }
 bool matchLeader( Activity *act, void *lead )
 {
-  if( lead == NULL )
+  if ( lead == NULL )
     return true;
-  else if( strcmp( act->leader, (char *) lead ) == 0)
+  else if ( strcmp( act->leader, (char *) lead ) == 0)
     return true;
   else
     return false;
 }
 bool matchTime( Activity *act, void *tm )
 {
-  if( ( act->startTime == *(int *)tm ||
+  if ( ( act->startTime == *(int *)tm ||
         act->startTime < *(int *)tm ) &&
         act->endTime > *(int *)tm )
     return true;
@@ -127,7 +127,7 @@ bool matchTime( Activity *act, void *tm )
 }
 bool matchKeyword( Activity *act, void *key )
 {
-  if( strcasestr( act->title, key ) )
+  if ( strcasestr( act->title, key ) )
     return true;
   else
     return false;

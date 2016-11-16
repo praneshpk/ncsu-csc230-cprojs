@@ -10,7 +10,7 @@
 
 #include "schedule.h"
 
-/** 
+/**
     Program starting point, will repeatedly prompt user for a command:
     add, remove, schedule, leader, at, match, or quit. Program will terminate
     on quit or end-of-file on standard input.
@@ -23,7 +23,7 @@ int main()
   Schedule *sched = createSchedule();
 
   // Sets input buffer for command
-  char buffer[22]; 
+  char buffer[22];
   int ch, h, m;
 
   // Serves as a stopper for the while loop
@@ -32,30 +32,30 @@ int main()
   while( !quit ) {
     // Takes user input for a command
     printf("> ");
-    if( scanf("%14s", buffer) == EOF ){
+    if ( scanf("%14s", buffer) == EOF ){
       quit = true;
       continue;
     }
 
     // Add command
-    if( strcmp(buffer, "add") == 0 ){
+    if ( strcmp(buffer, "add") == 0 ){
       // Frees Activity if parameters are invalid
       Activity *act = readActivity();
-      if( !act ) {
+      if ( !act ) {
         // Flush input and print error
         while ((ch = getchar() != '\n') && (ch != EOF));
         printf("Invalid command\n");
       }
       else {
-        if( !addActivity( sched, act ) ){
+        if ( !addActivity( sched, act ) ){
           printf("Schedule conflict\n");
         }
       }
     }
     // Remove command
-    else if( strcmp(buffer, "remove") == 0){
-      if( scanf("%d", &ch) == 1 ){
-        if( ! removeActivity( sched, ch ) )
+    else if ( strcmp(buffer, "remove") == 0){
+      if ( scanf("%d", &ch) == 1 ){
+        if ( ! removeActivity( sched, ch ) )
           printf("Invalid command\n");
       }
       else{
@@ -65,14 +65,14 @@ int main()
       }
     }
     // Schedule command
-    else if( strcmp(buffer, "schedule") == 0 ){
+    else if ( strcmp(buffer, "schedule") == 0 ){
       printSchedule( sched, matchLeader, NULL);
     }
     // Leader command
-    else if( strcmp(buffer, "leader") == 0 ){
+    else if ( strcmp(buffer, "leader") == 0 ){
       scanf("%21s", buffer);
       // Prints schedule with leader filter, if valid
-      if( strlen(buffer) > 20 )
+      if ( strlen(buffer) > 20 )
         printf("Invalid command\n");
       else
         printSchedule( sched, matchLeader, buffer );
@@ -80,14 +80,14 @@ int main()
       while ((ch = getchar() != '\n') && (ch != EOF));
     }
     // At command
-    else if( strcmp(buffer, "at") == 0 ){
+    else if ( strcmp(buffer, "at") == 0 ){
       // Checks if time is valid
-      if( scanf("%d:", &h) != 1 ||
+      if ( scanf("%d:", &h) != 1 ||
           h < 0 ||
           h > 23 ) {
         printf("Invalid command\n");
       }
-      else if( scanf("%d", &m) != 1 ||
+      else if ( scanf("%d", &m) != 1 ||
           m < 0 ||
           m > 59 ){
         printf("Invalid command\n");
@@ -101,15 +101,15 @@ int main()
       while ((ch = getchar() != '\n') && (ch != EOF));
 
     }
-    else if( strcmp(buffer, "match") == 0 ){
+    else if ( strcmp(buffer, "match") == 0 ){
       scanf("%21s", buffer);
-      if( strlen(buffer) > 20 )
+      if ( strlen(buffer) > 20 )
         printf("Invalid command\n");
       else
         printSchedule( sched, matchKeyword, buffer );
       while ((ch = getchar() != '\n') && (ch != EOF));
     }
-    else if( strcmp(buffer, "quit") == 0 ){
+    else if ( strcmp(buffer, "quit") == 0 ){
       quit = true;
     }
     else {

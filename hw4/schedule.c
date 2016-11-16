@@ -22,7 +22,7 @@ Schedule *createSchedule()
 void freeSchedule( Schedule *sched )
 {
   // Frees each element in Schedule List
-  for( int i = 0; i < sched->size; i++ ){
+  for ( int i = 0; i < sched->size; i++ ){
     freeActivity( sched->list[i] );
   }
   
@@ -34,11 +34,11 @@ void freeSchedule( Schedule *sched )
 bool addActivity( Schedule *sched, Activity *act )
 {
   // Runs through the list of activities
-  for( int i = 0; i < sched->size; i++ ){
+  for ( int i = 0; i < sched->size; i++ ){
     // Checks if there is the same leader
-    if( strcmp(act->leader, sched->list[i]->leader) == 0){
+    if ( strcmp(act->leader, sched->list[i]->leader) == 0){
       // Frees activity if there is an overlap
-      if(  act->startTime == sched->list[i]->startTime ||
+      if (  act->startTime == sched->list[i]->startTime ||
           ( act->startTime > sched->list[i]->startTime &&
             act->startTime < sched->list[i]->endTime ) || 
           ( act->endTime > sched->list[i]->startTime &&
@@ -49,7 +49,7 @@ bool addActivity( Schedule *sched, Activity *act )
     }
   }
   // Resizes list if needed
-  if( sched->size >= sched->capacity ){
+  if ( sched->size >= sched->capacity ){
     sched->capacity *= 2;
     sched->list = realloc( sched->list, sched->capacity * sizeof( Activity * ) );
   }
@@ -65,13 +65,13 @@ bool removeActivity( Schedule *sched, int id )
 {
   Activity **temp = sched->list;
   // Runs through the list of activities
-  for( int i = 0; i < sched->size; i++ ){
+  for ( int i = 0; i < sched->size; i++ ){
     // Remove activity if ID matches
-    if( temp[ i ]->id == id ){
-      if( sched->size == 1 )
+    if ( temp[ i ]->id == id ){
+      if ( sched->size == 1 )
         freeActivity(temp[0]);
-      for( int j = i; j< sched->size -1; j++){
-        if( j == 0 )
+      for ( int j = i; j< sched->size -1; j++){
+        if ( j == 0 )
           freeActivity( temp[j] );
         temp[ j ] = temp[ j + 1 ];
       }
@@ -91,16 +91,16 @@ void printSchedule( Schedule *sched, bool (*test)(Activity *, void *arg), void *
 
   // Loop to find largest leader strlen to format results
   int len = 0;
-  for( int i = 0; i < sched->size; i++ ){
+  for ( int i = 0; i < sched->size; i++ ){
     // Uses test function to filter results
-    if( ( *test )( sched->list[i], arg ) ){
+    if ( ( *test )( sched->list[i], arg ) ){
       // Sets len to largest length
-      if( len < strlen(sched->list[i]->leader) )
+      if ( len < strlen(sched->list[i]->leader) )
         len = strlen(sched->list[i]->leader);
     }
   }
-  for( int i = 0; i < sched->size; i++ ){
-    if( ( *test )( sched->list[i], arg ) ){
+  for ( int i = 0; i < sched->size; i++ ){
+    if ( ( *test )( sched->list[i], arg ) ){
       // Prints an activity
       printf("%2d:%02d %2d:%02d (%03d) %-*s %s\n", sched->list[i]->startTime / 60, sched->list[i]->startTime % 60,
             sched->list[i]->endTime / 60, sched->list[i]->endTime % 60, sched->list[i]->id, len,
