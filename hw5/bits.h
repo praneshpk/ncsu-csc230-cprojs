@@ -1,6 +1,6 @@
 /**
     @file bits.h
-    @author
+    @author Pranesh Kamalakanthan (pkamala)
 
     Header file for the bits.c component, with functions supporting
     reading and writing a file just a few bits at a time.
