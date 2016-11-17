@@ -10,6 +10,7 @@
 #define _BITS_H_
 
 #include <stdio.h>
+#include <math.h>
 
 /** Number of bits per byte.  This isn't going to change, but it lets us give
     a good explanation instead of just the literal value, 8. */

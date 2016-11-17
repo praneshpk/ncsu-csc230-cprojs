@@ -10,6 +10,7 @@
 
 #include "codes.h"
 #include "bits.h"
+#include <stdio.h>
 
 /**
   Program starting point, takes the infile and outfile as command-line
@@ -30,12 +31,36 @@ int main( int argc, char *argv[] )
   }
   else {
     // Opens file if it exists
-    FILE *fp;
-    if ( ( fp = fopen( argv[1], "r" ) ) == NULL ) {
+    FILE *input;
+    if ( ( input = fopen( argv[1], "r" ) ) == NULL ) {
       perror( argv[1] );
       exit( EXIT_FAILURE );
     }
-    fclose(fp);
+
+    // Opens the given binary output file for writing
+    FILE *output = fopen( argv[2], "wb" );
+
+    // Readies bit buffer with a format code 
+    BitBuffer write = { 1 << 3 , 5 };
+
+    // Reads each character in the input
+    int ch, code;
+    while( (ch = fgetc( input )) != EOF) {
+      if( ( code = symToCode( ch ) ) == 31 ) {
+        write5Bits( ESCAPE_CODE, &write, output );
+        write8Bits( ch, &write, output );
+      }
+      else
+        write5Bits( code, &write, output );
+    }
+
+    if( write.bcount > 0 )
+      flushBits( &write, output );
+    
+    // Closes input and output files
+    fclose(input);
+    fclose(output);
+
     return 0;
   }
 }

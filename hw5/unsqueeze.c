@@ -10,6 +10,7 @@
 
 #include "codes.h"
 #include "bits.h"
+#include <stdio.h>
 
 /**
   Program starting point, takes the infile and outfile as command-line
