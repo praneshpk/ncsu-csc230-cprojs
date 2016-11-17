@@ -54,8 +54,14 @@ int main( int argc, char *argv[] )
         write5Bits( code, &write, output );
     }
 
-    if( write.bcount > 0 )
+    if( write.bcount > 3 )
       flushBits( &write, output );
+    else if( write.bcount <= 3 &&
+        write.bcount > 0 ) {
+      write5Bits( ESCAPE_CODE, &write, output );
+      if( write.bcount != 3 )
+        flushBits( &write, output);
+    }
     
     // Closes input and output files
     fclose(input);
