@@ -75,9 +75,12 @@ int read5Bits( BitBuffer *buffer, FILE *fp )
     fseek( fp, -1, SEEK_CUR );
   }
   else {
+    // Add remaining bits from input byte to the buffer
     buffer->bits |= ( ch >> buffer->bcount );
+    // Set the return value to the code read
     res = buffer->bits >> ( BITS_PER_BYTE - 5 );
-    int size = buffer->bcount;
+    // Temporary value to hold size of bits to be copied over
+    int size = buffer->bcount; // 3 
     buffer->bits = buffer->bits << 5;
     buffer->bcount = BITS_PER_BYTE - 5;
     buffer->bits |= ( ch & ( (int) pow( 2, size ) - 1 ) ) << ( BITS_PER_BYTE - buffer->bcount - size);
@@ -95,6 +98,12 @@ int read8Bits( BitBuffer *buffer, FILE *fp )
   if( buffer->bcount == BITS_PER_BYTE ) {
     buffer->bits = fgetc(fp);
     buffer->bcount = BITS_PER_BYTE;
+  }
+  else {
+    printf("bits:%d count:%d\n",buffer->bits, buffer->bcount);
+    buffer->bits |= ( ch >> ( buffer->bcount ) );
+    res = buffer->bits;
+    buffer->bits = ch << ( BITS_PER_BYTE - buffer->bcount );
   }
   return res;
 }

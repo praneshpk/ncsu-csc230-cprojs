@@ -54,7 +54,7 @@ int main( int argc, char *argv[] )
       if( ( ch = read5Bits( &write, input ) ) == -1 ) {
         break;
       }
-      else if( ch == 31 ) {
+      else if( ch == ESCAPE_CODE ) {
         if( ( ch = read8Bits( &write, input ) ) == -1 )
           break;
         else

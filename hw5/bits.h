@@ -17,6 +17,8 @@
     a good explanation instead of just the literal value, 8. */
 #define BITS_PER_BYTE 8
 
+/** Position of lone characters to be used in offset values. This is changed
+    accordingly when bits are to be reread */
 static int chpos = 1;
 
 /** Buffer space for up to 8 bits that have been written by the
