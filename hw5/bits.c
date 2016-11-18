@@ -40,7 +40,7 @@ int read5Bits( BitBuffer *buffer, FILE *fp )
   int res = 0;
   int ch = fgetc(fp);
   if( ch == EOF ) {
-    if( buffer->bcount == 0 )
+    if( buffer->bcount < 5 )
       return -1;
     else {
       res = buffer->bits >> ( BITS_PER_BYTE - 5 );
@@ -88,10 +88,13 @@ int read5Bits( BitBuffer *buffer, FILE *fp )
 
 int read8Bits( BitBuffer *buffer, FILE *fp )
 {
-  int ch;
+  int ch = fgetc(fp);
   int res = buffer->bits;
-  if( ( ch = fgetc(fp) ) == EOF )
+  if( ch == EOF )
     return -1;
-  buffer->bits = ch;
+  if( buffer->bcount == BITS_PER_BYTE ) {
+    buffer->bits = fgetc(fp);
+    buffer->bcount = BITS_PER_BYTE;
+  }
   return res;
 }

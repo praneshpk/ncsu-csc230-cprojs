@@ -45,7 +45,7 @@ int main( int argc, char *argv[] )
     // Checks if file matches format code
     int ch; 
     if( ( ch = read5Bits( &write, input)) != 1 ) {
-      fprintf(stderr, "Invalid compressed format got %d", ch);
+      fprintf(stderr, "Invalid compressed format\n");
       exit( EXIT_FAILURE );
     }
 
