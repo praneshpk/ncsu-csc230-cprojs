@@ -8,9 +8,7 @@
   and using the bits component to write them out to the output file.
 */
 
-#include "codes.h"
 #include "bits.h"
-#include <stdio.h>
 
 /**
   Program starting point, takes the infile and outfile as command-line
@@ -40,7 +38,7 @@ int main( int argc, char *argv[] )
     // Opens the given binary output file for writing
     FILE *output = fopen( argv[2], "wb" );
 
-    // Readies bit buffer with a format code 
+    // Initializes bit buffer with a format code 
     BitBuffer write = { 1 << 3 , 5 };
 
     // Reads each character in the input
@@ -54,10 +52,12 @@ int main( int argc, char *argv[] )
         write5Bits( code, &write, output );
     }
 
+    // Flushes input if there are more than 3 bits
+    // Adds an extra escape code otherwise
     if( write.bcount > 3 )
       flushBits( &write, output );
     else if( write.bcount <= 3 &&
-        write.bcount > 0 ) {
+             write.bcount > 0 ) {
       write5Bits( ESCAPE_CODE, &write, output );
       if( write.bcount != 3 )
         flushBits( &write, output);

@@ -11,10 +11,13 @@
 
 #include <stdio.h>
 #include <math.h>
+#include "codes.h"
 
 /** Number of bits per byte.  This isn't going to change, but it lets us give
     a good explanation instead of just the literal value, 8. */
 #define BITS_PER_BYTE 8
+
+static int chpos = 1;
 
 /** Buffer space for up to 8 bits that have been written by the
     application but haven't yet been written out to a file, or that

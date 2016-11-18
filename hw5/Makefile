@@ -11,7 +11,7 @@ unsqueeze: unsqueeze.o codes.o bits.o
 unsqueeze.o: codes.h bits.h
 
 codes.o: codes.h
-bits.o: bits.h
+bits.o: bits.h codes.h
 
 clean:
 	rm -f squeeze squeeze.o

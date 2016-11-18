@@ -8,9 +8,8 @@
   them back to characters and writing those to the output file.
 */
 
-#include "codes.h"
 #include "bits.h"
-#include <stdio.h>
+#include <stdbool.h>
 
 /**
   Program starting point, takes the infile and outfile as command-line
@@ -30,13 +29,40 @@ int main( int argc, char *argv[] )
     exit( 1 );
   }
   else {
-    // Opens file if it exists
-    FILE *fp;
-    if ( ( fp = fopen( argv[1], "r" ) ) == NULL ) {
+    // Opens binary file if it exists
+    FILE *input;
+    if ( ( input = fopen( argv[1], "rb" ) ) == NULL ) {
       perror( argv[1] );
       exit( EXIT_FAILURE );
     }
-    fclose(fp);
-    return 0;
+
+    // Opens the given output file for writing
+    FILE *output = fopen( argv[2], "w" );
+
+    // Initializes bit buffer for reading
+    BitBuffer write = { 0 , 0 };
+
+    // Checks if file matches format code
+    int ch; 
+    if( ( ch = read5Bits( &write, input)) != 1 ) {
+      fprintf(stderr, "Invalid compressed format got %d", ch);
+      exit( EXIT_FAILURE );
+    }
+
+    // Reads each character in the input
+    while( true ) {
+      if( ( ch = read5Bits( &write, input ) ) == -1 ) {
+        break;
+      }
+      else if( ch == 31 ) {
+        if( ( ch = read8Bits( &write, input ) ) == -1 )
+          break;
+        else
+          fputc( ch, output );
+      }
+      else {
+        fputc( codeToSym( ch ), output);
+      }
+    }
   }
 }
