@@ -100,7 +100,6 @@ int read8Bits( BitBuffer *buffer, FILE *fp )
     buffer->bcount = BITS_PER_BYTE;
   }
   else {
-    printf("bits:%d count:%d\n",buffer->bits, buffer->bcount);
     buffer->bits |= ( ch >> ( buffer->bcount ) );
     res = buffer->bits;
     buffer->bits = ch << ( BITS_PER_BYTE - buffer->bcount );
