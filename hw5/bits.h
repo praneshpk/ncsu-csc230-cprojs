@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 #include "codes.h"
 
 /** Number of bits per byte.  This isn't going to change, but it lets us give
@@ -20,6 +21,9 @@
 /** Position of lone characters to be used in offset values. This is changed
     accordingly when bits are to be reread */
 static int chpos = 1;
+
+/** Indicator for read8Bits() if the buffer has to get leftover characters */
+static bool stillread = false;
 
 /** Buffer space for up to 8 bits that have been written by the
     application but haven't yet been written out to a file, or that

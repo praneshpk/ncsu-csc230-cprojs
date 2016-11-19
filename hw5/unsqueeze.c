@@ -9,7 +9,6 @@
 */
 
 #include "bits.h"
-#include <stdbool.h>
 
 /**
   Program starting point, takes the infile and outfile as command-line

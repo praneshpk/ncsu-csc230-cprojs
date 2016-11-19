@@ -60,6 +60,7 @@ int read5Bits( BitBuffer *buffer, FILE *fp )
     buffer->bits = buffer->bits << 5;
     buffer->bcount = buffer->bcount - 5 + chpos;
     buffer->bits |= (ch & ( (int) pow( 2, chpos ) - 1 ) ) << ( 5 - chpos );
+    stillread = false;
   }
   else if( buffer->bcount == 0 ) {
     res = ch >> ( BITS_PER_BYTE - 5 );
@@ -73,6 +74,7 @@ int read5Bits( BitBuffer *buffer, FILE *fp )
     buffer->bits |= ch >> chpos;
     buffer->bcount = 8;
     fseek( fp, -1, SEEK_CUR );
+    stillread = true;
   }
   else {
     // Add remaining bits from input byte to the buffer
@@ -96,8 +98,16 @@ int read8Bits( BitBuffer *buffer, FILE *fp )
   if( ch == EOF )
     return -1;
   if( buffer->bcount == BITS_PER_BYTE ) {
-    buffer->bits = fgetc(fp);
-    buffer->bcount = BITS_PER_BYTE;
+    if( !stillread ) {
+      buffer->bits = fgetc(fp);
+      buffer->bcount = BITS_PER_BYTE;
+    }
+    else {
+      buffer->bcount = buffer->bcount - 5 + chpos;
+      buffer->bits |= (ch & ( (int) pow( 2, chpos ) - 1 ) ) << ( 5 - chpos );
+      stillread = false;
+      read8Bits( buffer, fp );
+    }
   }
   else {
     buffer->bits |= ( ch >> ( buffer->bcount ) );
