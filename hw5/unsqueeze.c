@@ -63,5 +63,11 @@ int main( int argc, char *argv[] )
         fputc( codeToSym( ch ), output);
       }
     }
+
+    // Closes input and output files
+    fclose(input);
+    fclose(output);
+
+    return 0;
   }
 }
