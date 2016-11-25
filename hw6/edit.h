@@ -1,3 +1,12 @@
+/**
+  @file edit.h
+  @author Pranesh Kamalakanthan (pkamala)
+
+  This provides the inheritance hierarchy, Edit, representing undo-able edits to a document.
+  It will also provide a History structure and related functions to maintain a stack of edits
+  that can be undone and a stack of recently undone edits that can be redone.
+*/
+
 #ifndef _EDIT_H_
 #define _EDIT_H_
 

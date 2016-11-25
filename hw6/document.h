@@ -1,7 +1,19 @@
+/**
+  @file document.h
+  @author Pranesh Kamalakanthan (pkamala)
+
+  This provides the document and line structures and related functions
+*/
+
 #ifndef _DOCUMENT_H_
 #define _DOCUMENT_H_
 
+/** Defines the initial capacity for allocating the lines array */
+#define INIT_CAP 15
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 
 /** Representation for a line of text in the document. */
