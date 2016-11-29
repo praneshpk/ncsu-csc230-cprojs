@@ -42,8 +42,11 @@ struct EditTag {
     edits and a redo stack, to redo recently undone operation
  */
 typedef struct {
-
-
+  /** Stacks of un/redoable edits */
+  Edit *undo[HIST_SIZE], *redo[HIST_SIZE];
+  
+  /** Number of edits in undo/redo stack */
+  int ulen, rlen;
 } History;
 
 /**
@@ -104,5 +107,22 @@ bool undoEdit( History *hist, Document *doc );
     @return true if there was an edit to redo
 */
 bool redoEdit( History *hist, Document *doc );
+
+/** Apply the given edit to the given document
+    @param edit The the edit that should be applied to the given document.
+    @param doc The document the edit should be applied to.
+ */
+void apply( Edit *edit, Document *doc );
+
+/** Undo the given edit to the given document
+    @param edit The the edit that should be applied to the given document.
+    @param doc The document the edit should be applied to.
+ */
+void undo( Edit *edit, Document *doc );
+
+/** Free the resources for the given edit
+    @param edit The the edit that should be applied to the given document.
+ */
+void destroy( Edit *edit );
 
 #endif
