@@ -33,6 +33,24 @@ struct EditTag {
   // Virtual function, to free all resources for this Edit.
   void (*destroy)( Edit * );
 };
+/**
+    Derived class of Edit for an insert / delete operation. This has
+    additional fields that remember the position of where the 
+*/
+typedef struct {
+  /** Row and column position of character and character to be modified. */
+  int cRow, cCol, ch;
+
+  // Virtual function to apply this edit to the given document.
+  void (*apply)( Edit *, Document * );
+
+  // Virtual function to undo this edit in the given document.
+  void (*undo)( Edit *, Document * );
+
+  // Virtual function to free all resources for this Edit.
+  void (*destroy)( Edit * );
+} Modify;
+
 
 /** Maximum size of the undo/redo stack. */
 #define HIST_SIZE 30
@@ -108,11 +126,17 @@ bool undoEdit( History *hist, Document *doc );
 */
 bool redoEdit( History *hist, Document *doc );
 
-/** Apply the given edit to the given document
+/** Delete the given edit to the given document
     @param edit The the edit that should be applied to the given document.
     @param doc The document the edit should be applied to.
  */
-void apply( Edit *edit, Document *doc );
+void delete( Edit *edit, Document *doc );
+
+/** Insert the given edit to the given document
+    @param edit The the edit that should be applied to the given document.
+    @param doc The document the edit should be applied to.
+ */
+void insert( Edit *edit, Document *doc );
 
 /** Undo the given edit to the given document
     @param edit The the edit that should be applied to the given document.
