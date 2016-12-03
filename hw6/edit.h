@@ -38,6 +38,9 @@ struct EditTag {
     additional fields that remember the position of where the 
 */
 typedef struct {
+  /** Stores whether the edit was a delete or insert **/
+  bool isDelete;
+
   /** Row and column position of character and character to be modified. */
   int cRow, cCol, ch;
 

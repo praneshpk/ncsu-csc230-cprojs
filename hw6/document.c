@@ -61,7 +61,6 @@ Document *loadDocument( const char *filename )
   // Adds lines to array until EOF
   while( (read = loadLine( fp )) ) {
     doc->lines[ doc->len ++ ] = read;
-    printf("%d: %s len:%d strlen:\n",doc->len, doc->lines[doc->len - 1 ]->text, doc->lines[doc->len - 1 ]->len);
     // Reallocates memory if lines array reaches max capacity
     if( doc->len >= doc->cap) {
       doc->cap *= 2;
