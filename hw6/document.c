@@ -83,6 +83,7 @@ bool saveDocument( Document *doc, const char *filename )
     fputs( doc->lines[i]->text, fp );
     fputc( '\n', fp );
   }
+  fclose(fp);
 
   return true;
 }

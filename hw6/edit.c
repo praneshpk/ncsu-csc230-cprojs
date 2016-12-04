@@ -31,6 +31,7 @@ Edit *makeDelete( Document *doc )
     // Sets delete position in document
     del->cRow = doc->cRow;
     del->cCol = doc->cCol - 1;
+    del->ch = 0;
     del->isDelete = true;
     return (Edit *) del;
   }
@@ -66,6 +67,7 @@ void applyEdit( History *hist, Document *doc, Edit *edit )
   Edit *op = hist->undo[ hist->ulen ];
   // Perform apply operation
   op->apply( op, doc );
+    
   // Add edit to undo history
   if( hist->ulen == HIST_SIZE ) {
     // Frees oldest undo
@@ -122,13 +124,22 @@ void delete( Edit *edit, Document *doc )
              str->len - delete->cCol );
     str->len --;
     // Update document cursor position
-    doc->cCol = delete->cCol;
+    if( delete->isDelete )
+      moveCursor( doc, CursorLeft);
+    else
+      doc->cCol = delete->cCol;
   }
   else {
+    Line *prev;
     // Sets ch to newline for undo purposes
     delete->ch = '\n';
     // Sets previous line to a pointer
-    Line *prev = doc->lines[ delete->cRow - 1 ];
+    if( delete->cRow == 0 ) {
+      prev = str;
+      str = doc->lines[ 1 ];
+    }
+    else
+      prev = doc->lines[ delete->cRow - 1 ];
     // Reallocates memory if necessary
     if( prev->cap <= str->len + prev->len ) {
       prev->cap = str->len + prev->len + 1 ;
@@ -140,12 +151,20 @@ void delete( Edit *edit, Document *doc )
     // Frees the removed line
     freeLine( str );
     // Removes the line from the document
-    memmove( doc->lines + delete->cRow , doc->lines + delete->cRow + 1,
-             doc->len - delete->cRow );
+    if( delete->cRow == 0 ){
+      for( int i = 1; i < doc->len; i++ )
+        doc->lines[i] = doc->lines[i+1];
+    }
+    else {
+      for( int i = delete->cRow; i < doc->len - delete->cRow; i++ )
+        doc->lines[i] = doc->lines[i+1];
+    }
     doc->len --;
     // Update document cursor position
-    doc->cRow --;
-    doc->cCol = doc->lines[ doc->cRow ]->len;
+    moveCursor( doc, CursorUp);
+    doc->cCol = prev->len - str->len;
+    delete->cRow = doc->cRow;
+    delete->cCol = doc->cCol;
   }
 }
 void insert( Edit *edit, Document *doc )
@@ -160,16 +179,26 @@ void insert( Edit *edit, Document *doc )
       doc->lines = ( Line ** )realloc( doc->lines, doc->cap );
     }
     // Makes space for inserted line
-    for( int i = insert->cRow; i < doc->len; i++ )
-      doc->lines[ i + 1 ]->text = doc->lines[ i ]->text;
+    for( int i = doc->len; i > insert->cRow; i-- )
+      doc->lines[ i ] = doc->lines[ i - 1 ];
     // Initialize new line
-    doc->lines[ insert->cRow ] = (Line *)malloc( sizeof( Line ) );
-    doc->lines[ insert->cRow ]->cap = INIT_CAP;
-    doc->lines[ insert->cRow ]->len = 0;
-    doc->lines[ insert->cRow ]->text = (char *)malloc( doc->lines[ insert->cRow ]->cap );
-    doc->lines[ insert->cRow ]->text[0] = '\0';
+    doc->lines[ insert->cRow + 1 ] = (Line *)malloc( sizeof( Line ) );
+    Line *next = doc->lines[ insert->cRow + 1 ];
+    next->cap = str->len - insert->cCol + 1;
+    next->len = next->cap - 1;
+    next->text = (char *)malloc( next->cap );
+    // Move part of the line to new line
+    memcpy( next->text, str->text + insert->cCol,
+             str->len - insert->cCol );
+
+    str->text[ insert->cCol ] = '\0';
+    str->len = insert->cCol;
+    next->text[ next->len ] = '\0';
+    insert->cCol = -1;
+
     // Update document cursor position
-    doc->cRow++;
+    moveCursor( doc, CursorDown);
+    doc->cCol = 0;
   }
   else {
     if( str->cap <= ++ str->len ) {
@@ -177,12 +206,14 @@ void insert( Edit *edit, Document *doc )
       str->text = ( char * )realloc( str->text, str->cap );
     }
     // Makes space for inserted character
-    for( int i = insert->cCol; i < str->len; i++ )
-      str->text[ i + 1 ] = str->text[ i ];
+    for( int i = str->len; i >= insert->cCol; i-- )
+      str->text[ i ] = str->text[ i - 1 ];
     // Insert character at position
     str->text[ insert->cCol ] = insert->ch;
     // Update document cursor position
-    doc->cCol++;
+    doc->cCol = insert->cCol;
+    doc->cRow = insert->cRow;
+    moveCursor( doc, CursorRight);
   }
 }
 void undo( Edit *edit, Document *doc )
