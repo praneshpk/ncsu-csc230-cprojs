@@ -168,7 +168,8 @@ void delete( Edit *edit, Document *doc )
     }
     doc->len --;
     // Update document cursor position
-    moveCursor( doc, CursorUp);
+    if( delete->isDelete )
+      moveCursor( doc, CursorUp);
     doc->cCol = prev->len - str->len;
     delete->cRow = doc->cRow;
     delete->cCol = doc->cCol;
