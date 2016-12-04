@@ -63,21 +63,24 @@ void clearHistory( History *hist )
 
 void applyEdit( History *hist, Document *doc, Edit *edit )
 {
-  // Pointer to edit operation
-  Edit *op = hist->undo[ hist->ulen ];
   // Perform apply operation
-  op->apply( op, doc );
-    
+  edit->apply( edit, doc );
+
   // Add edit to undo history
   if( hist->ulen == HIST_SIZE ) {
     // Frees oldest undo
     hist->undo[0]->destroy( hist->undo[0] );
-    for( int i = 1; i < hist->ulen; i++ )
-      hist->undo[ i - 1 ] = hist->undo[ i ];
+    for( int i = hist->ulen; i > 0; i-- )
+      hist->undo[ i ] = hist->undo[ i - 1 ];
     hist->undo[ hist->ulen ] = edit;
   }
   else
     hist->undo[ hist->ulen ++ ] = edit;
+
+  // Clear redo history
+  for( int i = 0; i < hist->rlen; i++ )
+    hist->redo[ i ]->destroy( hist->redo[ i ] );
+  hist->rlen = 0;
 }
 
 bool undoEdit( History *hist, Document *doc )
@@ -86,7 +89,7 @@ bool undoEdit( History *hist, Document *doc )
     return false;
   else {
     // Pointer to undo operation
-    Edit *op = hist->undo[ hist->ulen ];
+    Edit *op = hist->undo[ hist->ulen - 1];
     // Perform undo operation
     op->undo( op, doc );
     // Move undo to redo history
@@ -102,7 +105,7 @@ bool redoEdit( History *hist, Document *doc )
     return false;
   else {
     // Pointer to redo operation
-    Edit *op = hist->redo[ hist->ulen ];
+    Edit *op = hist->redo[ hist->rlen - 1];
     // Perform redo operation
     op->undo( op, doc );
     // Move redo to undo history
@@ -115,6 +118,9 @@ void delete( Edit *edit, Document *doc )
 {
   Modify *delete = (Modify *) edit;
   Line *str = doc->lines[ delete->cRow ];
+  // Changes for redo operation
+  if( delete->ch == '\n' )
+    delete->cCol = -1;
   // Checks if character deleted is newline or not
   if( delete->cCol >= 0 ) {
     // Store deleted character
@@ -131,15 +137,16 @@ void delete( Edit *edit, Document *doc )
   }
   else {
     Line *prev;
-    // Sets ch to newline for undo purposes
-    delete->ch = '\n';
     // Sets previous line to a pointer
-    if( delete->cRow == 0 ) {
+    if( delete->cRow == 0 || 
+        delete->ch == '\n' ) {
       prev = str;
-      str = doc->lines[ 1 ];
+      str = doc->lines[ delete->cRow + 1 ];
     }
     else
       prev = doc->lines[ delete->cRow - 1 ];
+    // Sets ch to newline for undo purposes
+    delete->ch = '\n';
     // Reallocates memory if necessary
     if( prev->cap <= str->len + prev->len ) {
       prev->cap = str->len + prev->len + 1 ;
@@ -219,6 +226,7 @@ void insert( Edit *edit, Document *doc )
 void undo( Edit *edit, Document *doc )
 {
   Modify *undo = (Modify *) edit;
+  doc->cRow = undo->cRow;
   undo->isDelete ? insert( edit, doc ) : delete( edit, doc );
   undo->isDelete = !undo->isDelete;
 }

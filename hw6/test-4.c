@@ -206,6 +206,12 @@ int main()
   checkLine( doc, 2, "file we're goin", __LINE__ );
   test( doc->cRow == 2 && doc->cCol == 15, __LINE__, "Updated cursor position" );
 
+  /*for( int i=0; i<doc->len; i++ )
+    printf("\"%s\"\n",doc->lines[i]->text);
+  printf("row:%d col:%d\nstr:%s len:%d\n",
+        ((Modify*)hist.redo[hist.rlen])->cRow,
+        ((Modify*)hist.redo[hist.rlen])->cCol,
+        doc->lines[2]->text, doc->lines[2]->len);*/
   test( redoEdit( &hist, doc ), __LINE__, "Successful redo" );
   checkLine( doc, 2, "file we're gointo use for editing.", __LINE__ );
   test( doc->cRow == 2 && doc->cCol == 15, __LINE__, "Updated cursor position" );
