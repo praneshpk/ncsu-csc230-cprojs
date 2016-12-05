@@ -1,6 +1,5 @@
 CFLAGS = -g -Wall -std=c99 -I curse
-LDFLAGS = -L curse
-LDLIBS = -lncurses -ltinfo
+LDLIBS = -lncurses
 
 all: sled
 
