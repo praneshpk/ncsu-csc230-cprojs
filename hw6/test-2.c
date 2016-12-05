@@ -124,7 +124,6 @@ int main()
   test( moveCursor( doc, CursorUp ), __LINE__, "Cursor up to a shorter line" );
   test( doc->cRow == 12 && doc->cCol == 3, __LINE__, "At the end of a shorter line" );
 
-
   // Move up to the end of a longer line.
   for ( int i = 0; i < 2; i++ )
     moveCursor( doc, CursorUp );

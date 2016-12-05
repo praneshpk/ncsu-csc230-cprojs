@@ -20,7 +20,7 @@ Edit *makeInsert( Document *doc, int ch )
 Edit *makeDelete( Document *doc )
 {
   // Checks if delete operation is possible
-  if( doc->cRow > 0 ||
+  if ( doc->cRow > 0 ||
       doc->cCol > 0 ) {
     // Allocates memory for edit object and initializes virtual functions
     Modify *del = ( Modify * )malloc( sizeof( Modify ) );
@@ -42,7 +42,7 @@ Edit *makeDelete( Document *doc )
 void initHistory( History *hist )
 {
   // Initializes array of pointers
-  for( int i = 0; i < HIST_SIZE; i++ ) {
+  for ( int i = 0; i < HIST_SIZE; i++ ) {
     hist->undo[i] = NULL;
     hist->redo[i] = NULL;
   }
@@ -53,10 +53,13 @@ void initHistory( History *hist )
 
 void clearHistory( History *hist )
 {
-  for( int i = 0; i < hist->ulen; i++ )
+  // Clear undo stack
+  for ( int i = 0; i < hist->ulen; i++ )
     hist->undo[i]->destroy( hist->undo[i] );
-  for( int i = 0; i < hist->rlen; i++ )
+  // Clear redo stack
+  for ( int i = 0; i < hist->rlen; i++ )
     hist->redo[i]->destroy( hist->redo[i] );
+  // Resets stack lengths
   hist->ulen = 0;
   hist->rlen = 0;
 }
@@ -67,24 +70,26 @@ void applyEdit( History *hist, Document *doc, Edit *edit )
   edit->apply( edit, doc );
 
   // Add edit to undo history
-  if( hist->ulen == HIST_SIZE ) {
+  if ( hist->ulen == HIST_SIZE ) {
     // Frees oldest undo
     hist->undo[0]->destroy( hist->undo[0] );
-    for( int i = 1; i < hist->ulen; i++ )
+    // Shifts and adds undo to stack
+    for ( int i = 1; i < hist->ulen; i++ )
       hist->undo[ i - 1 ] = hist->undo[ i ];
     hist->undo[ hist->ulen - 1] = edit;
   }
   else
     hist->undo[ hist->ulen ++ ] = edit;
   // Clear redo history
-  for( int i = 0; i < hist->rlen; i++ )
+  for ( int i = 0; i < hist->rlen; i++ )
     hist->redo[ i ]->destroy( hist->redo[ i ] );
   hist->rlen = 0;
 }
 
 bool undoEdit( History *hist, Document *doc )
 {
-  if( hist->ulen == 0 )
+  // Checks if undo can be performed
+  if ( hist->ulen == 0 )
     return false;
   else {
     // Pointer to undo operation
@@ -101,7 +106,7 @@ bool undoEdit( History *hist, Document *doc )
 
 bool redoEdit( History *hist, Document *doc )
 {
-  if( hist->rlen == 0 )
+  if ( hist->rlen == 0 )
     return false;
   else {
     // Pointer to redo operation
@@ -120,10 +125,10 @@ void delete( Edit *edit, Document *doc )
   Modify *delete = (Modify *) edit;
   Line *str = doc->lines[ delete->cRow ];
   // Changes for redo operation
-  if( delete->ch == '\n' )
+  if ( delete->ch == '\n' )
     delete->cCol = -1;
   // Checks if character deleted is newline or not
-  if( delete->cCol >= 0 ) {
+  if ( delete->cCol >= 0 ) {
     // Store deleted character
     delete->ch = str->text[ delete->cCol ];
     // Remove character
@@ -131,7 +136,7 @@ void delete( Edit *edit, Document *doc )
              str->len - delete->cCol );
     str->len --;
     // Update document cursor position
-    if( delete->isDelete )
+    if ( delete->isDelete )
       moveCursor( doc, CursorLeft);
     else
       doc->cCol = delete->cCol;
@@ -139,7 +144,7 @@ void delete( Edit *edit, Document *doc )
   else {
     Line *prev;
     // Sets previous line to a pointer
-    if( delete->cRow == 0 || 
+    if ( delete->cRow == 0 || 
         delete->ch == '\n' ) {
       prev = str;
       str = doc->lines[ delete->cRow + 1 ];
@@ -149,7 +154,7 @@ void delete( Edit *edit, Document *doc )
     // Sets ch to newline for undo purposes
     delete->ch = '\n';
     // Reallocates memory if necessary
-    if( prev->cap <= str->len + prev->len ) {
+    if ( prev->cap <= str->len + prev->len ) {
       prev->cap = str->len + prev->len + 1 ;
       prev->text = ( char * )realloc( prev->text, prev->cap );
     }
@@ -157,17 +162,17 @@ void delete( Edit *edit, Document *doc )
     prev->len += str->len; 
     prev->text = strcat( prev->text, str->text );
     // Removes the line from the document
-    if( delete->cRow == 0 ){
-      for( int i = 1; i < doc->len; i++ )
+    if ( delete->cRow == 0 ) {
+      for ( int i = 1; i < doc->len; i++ )
         doc->lines[i] = doc->lines[i+1];
     }
     else {
-      for( int i = delete->cRow; i < doc->len - delete->cRow; i++ )
+      for ( int i = delete->cRow; i < doc->len - delete->cRow; i++ )
         doc->lines[i] = doc->lines[i+1];
     }
     doc->len --;
     // Update document cursor position
-    if( delete->isDelete )
+    if ( delete->isDelete )
       moveCursor( doc, CursorUp);
     doc->cCol = prev->len - str->len;
     delete->cRow = doc->cRow;
@@ -181,14 +186,14 @@ void insert( Edit *edit, Document *doc )
   Modify *insert = (Modify *) edit;
   Line *str = doc->lines[ insert->cRow ];
   // Checks if insert is a newline character or not
-  if( insert->ch == '\n' ) {
+  if ( insert->ch == '\n' ) {
     // Reallocates space for document lines
-    if( doc->cap <= ++ doc->len ) {
+    if ( doc->cap <= ++ doc->len ) {
       doc->cap *= 2;
       doc->lines = ( Line ** )realloc( doc->lines, doc->cap );
     }
     // Makes space for inserted line
-    for( int i = doc->len; i > insert->cRow; i-- )
+    for ( int i = doc->len; i > insert->cRow; i-- )
       doc->lines[ i ] = doc->lines[ i - 1 ];
     // Initialize new line
     doc->lines[ insert->cRow + 1 ] = (Line *)malloc( sizeof( Line ) );
@@ -199,7 +204,7 @@ void insert( Edit *edit, Document *doc )
     // Move part of the line to new line
     /*memmove( next->text, str->text + insert->cCol,
              str->len - insert->cCol );*/
-    for( int i = 0; i < str->len - insert->cCol; i++ )
+    for ( int i = 0; i < str->len - insert->cCol; i++ )
         next->text[i] = str->text[ insert->cCol + i ];
 
     str->text[ insert->cCol ] = '\0';
@@ -212,12 +217,12 @@ void insert( Edit *edit, Document *doc )
     doc->cCol = 0;
   }
   else {
-    if( str->cap <= ++ str->len ) {
+    if ( str->cap <= ++ str->len ) {
       str->cap *= 2;
       str->text = ( char * )realloc( str->text, str->cap );
     }
     // Makes space for inserted character
-    for( int i = str->len; i >= insert->cCol; i-- )
+    for ( int i = str->len; i >= insert->cCol; i-- )
       str->text[ i ] = str->text[ i - 1 ];
     // Insert character at position
     str->text[ insert->cCol ] = insert->ch;

@@ -64,7 +64,7 @@ int main()
 {
   // Get a clean copy of the test file.
   copyFile( "original-1.txt", "test.txt" );
-
+  
   // Load it as a document.
   Document *doc = loadDocument( "test.txt" );
 

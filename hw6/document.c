@@ -10,23 +10,23 @@ Line *loadLine( FILE *fp )
 
   // Checks if line contains any data
   char ch;
-  if( ( ch = fgetc( fp )) == EOF) {
+  if ( ( ch = fgetc( fp )) == EOF) {
     freeLine( line );
     return NULL;
   }
-  if( ch == '\n' ) {
+  if ( ch == '\n' ) {
     line->text[0] = '\0';
     return line;
   }
   // Updates line, character by character, reallocating if necessary
   do {
     line->text[ line->len ++ ] = ch;
-    if( line->len >= line->cap ) {
+    if ( line->len >= line->cap ) {
       line->cap *= 2;
       line->text = ( char * )realloc( line->text, line->cap );
     }
     line->text[ line->len + 1 ] = '\0';
-  } while( ( ch = fgetc( fp )) != '\n' && ch != EOF);
+  } while ( ( ch = fgetc( fp )) != '\n' && ch != EOF);
   return line;
 }
 
@@ -59,10 +59,10 @@ Document *loadDocument( const char *filename )
   Line *read;
 
   // Adds lines to array until EOF
-  while( (read = loadLine( fp )) ) {
+  while ( (read = loadLine( fp )) ) {
     doc->lines[ doc->len ++ ] = read;
     // Reallocates memory if lines array reaches max capacity
-    if( doc->len >= doc->cap) {
+    if ( doc->len >= doc->cap) {
       doc->cap *= 2;
       doc->lines = ( Line ** )realloc( doc->lines, doc->cap );
     }
@@ -79,7 +79,7 @@ bool saveDocument( Document *doc, const char *filename )
   FILE *fp = fopen( filename, "w" );
 
   // Writes each line to file
-  for( int i = 0; i < doc->len; i++ ) {
+  for ( int i = 0; i < doc->len; i++ ) {
     fputs( doc->lines[i]->text, fp );
     fputc( '\n', fp );
   }
@@ -92,29 +92,29 @@ bool moveCursor( Document *doc, CursorDir dir )
 {
   switch(dir) {
     case CursorUp:
-      if( doc->cRow - 1 >= 0 ) {
+      if ( doc->cRow - 1 >= 0 ) {
         doc->cRow --;
-        if( doc->cCol > doc->lines[doc->cRow]->len  )
+        if ( doc->cCol > doc->lines[doc->cRow]->len  )
           doc->cCol = doc->lines[doc->cRow]->len;
         return true;
       }
       break;
     case CursorRight:
-      if( doc->cCol + 1 <= doc->lines[doc->cRow]->len ) {
+      if ( doc->cCol + 1 <= doc->lines[doc->cRow]->len ) {
         doc->cCol ++;
         return true;
       }
       break;
     case CursorDown:
-      if( doc->cRow + 1 < doc->len ) {
+      if ( doc->cRow + 1 < doc->len ) {
         doc->cRow ++;
-        if( doc->cCol > doc->lines[doc->cRow]->len  )
+        if ( doc->cCol > doc->lines[doc->cRow]->len  )
           doc->cCol = doc->lines[doc->cRow]->len;
         return true;
       }
       break;
     case CursorLeft:
-      if( doc->cCol - 1 >= 0 ) {
+      if ( doc->cCol - 1 >= 0 ) {
           doc->cCol --;
           return true;
         }
@@ -125,7 +125,7 @@ bool moveCursor( Document *doc, CursorDir dir )
 
 void freeDocument( Document *doc )
 {
-  for( int i = 0; i < doc->len; i++ )
+  for ( int i = 0; i < doc->len; i++ )
     freeLine( doc->lines[i] );
   free( doc->lines );
   free( doc );
