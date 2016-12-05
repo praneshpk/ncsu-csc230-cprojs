@@ -258,7 +258,6 @@ int main()
   applyEdit( &hist, doc, ed );
   
   test( ! redoEdit( &hist, doc ), __LINE__, "Redo stack should be empty." );
-
   clearHistory( &hist );
   freeDocument( doc );
 

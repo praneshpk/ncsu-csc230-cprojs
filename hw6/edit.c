@@ -53,10 +53,10 @@ void initHistory( History *hist )
 
 void clearHistory( History *hist )
 {
-  for( int i = 0; i < HIST_SIZE; i++ ) {
+  for( int i = 0; i < hist->ulen; i++ )
     hist->undo[i]->destroy( hist->undo[i] );
+  for( int i = 0; i < hist->rlen; i++ )
     hist->redo[i]->destroy( hist->redo[i] );
-  }
   hist->ulen = 0;
   hist->rlen = 0;
 }
@@ -70,13 +70,12 @@ void applyEdit( History *hist, Document *doc, Edit *edit )
   if( hist->ulen == HIST_SIZE ) {
     // Frees oldest undo
     hist->undo[0]->destroy( hist->undo[0] );
-    for( int i = hist->ulen; i > 0; i-- )
-      hist->undo[ i ] = hist->undo[ i - 1 ];
-    hist->undo[ hist->ulen ] = edit;
+    for( int i = 1; i < hist->ulen; i++ )
+      hist->undo[ i - 1 ] = hist->undo[ i ];
+    hist->undo[ hist->ulen - 1] = edit;
   }
   else
     hist->undo[ hist->ulen ++ ] = edit;
-
   // Clear redo history
   for( int i = 0; i < hist->rlen; i++ )
     hist->redo[ i ]->destroy( hist->redo[ i ] );
@@ -94,7 +93,8 @@ bool undoEdit( History *hist, Document *doc )
     op->undo( op, doc );
     // Move undo to redo history
     hist->redo[ hist->rlen ++ ] = op;
-    hist->undo[ hist->ulen -- ] = NULL;
+    hist->undo[ hist->ulen - 1] = NULL;
+    hist->ulen --;
     return true;
   }
 }
@@ -110,7 +110,8 @@ bool redoEdit( History *hist, Document *doc )
     op->undo( op, doc );
     // Move redo to undo history
     hist->undo[ hist->ulen ++ ] = op;
-    hist->redo[ hist->rlen -- ] = NULL;
+    hist->redo[ hist->rlen - 1] = NULL;
+    hist->rlen -- ;
     return true;
   }
 }
@@ -196,8 +197,10 @@ void insert( Edit *edit, Document *doc )
     next->len = next->cap - 1;
     next->text = (char *)malloc( next->cap );
     // Move part of the line to new line
-    memcpy( next->text, str->text + insert->cCol,
-             str->len - insert->cCol );
+    /*memmove( next->text, str->text + insert->cCol,
+             str->len - insert->cCol );*/
+    for( int i = 0; i < str->len - insert->cCol; i++ )
+        next->text[i] = str->text[ insert->cCol + i ];
 
     str->text[ insert->cCol ] = '\0';
     str->len = insert->cCol;
