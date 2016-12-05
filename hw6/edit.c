@@ -156,8 +156,6 @@ void delete( Edit *edit, Document *doc )
     // Appends text to previous line
     prev->len += str->len; 
     prev->text = strcat( prev->text, str->text );
-    // Frees the removed line
-    freeLine( str );
     // Removes the line from the document
     if( delete->cRow == 0 ){
       for( int i = 1; i < doc->len; i++ )
@@ -174,6 +172,8 @@ void delete( Edit *edit, Document *doc )
     doc->cCol = prev->len - str->len;
     delete->cRow = doc->cRow;
     delete->cCol = doc->cCol;
+    // Frees the removed line
+    freeLine( str );
   }
 }
 void insert( Edit *edit, Document *doc )
